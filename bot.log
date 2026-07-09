@@ -911,3 +911,9 @@ TypeError: object of type 'generator' has no len()
 2026-07-09 17:18:35,268 - WARNING - Sleep for 4.934981 seconds and try again... (tryings = 21, bot id = 8955337292)
 2026-07-09 17:19:50,282 - ERROR - Failed to fetch updates - TelegramNetworkError: HTTP Client says - Request timeout error
 2026-07-09 17:19:50,282 - WARNING - Sleep for 5.005697 seconds and try again... (tryings = 22, bot id = 8955337292)
+2026-07-09 17:21:06,266 - ERROR - Failed to fetch updates - TelegramNetworkError: HTTP Client says - Request timeout error
+2026-07-09 17:21:06,266 - WARNING - Sleep for 5.046106 seconds and try again... (tryings = 23, bot id = 8955337292)
+2026-07-09 17:22:22,281 - ERROR - Failed to fetch updates - TelegramNetworkError: HTTP Client says - Request timeout error
+2026-07-09 17:22:22,281 - WARNING - Sleep for 4.906823 seconds and try again... (tryings = 24, bot id = 8955337292)
+2026-07-09 17:23:37,266 - ERROR - Failed to fetch updates - TelegramNetworkError: HTTP Client says - Request timeout error
+2026-07-09 17:23:37,266 - WARNING - Sleep for 4.995420 seconds and try again... (tryings = 25, bot id = 8955337292)
