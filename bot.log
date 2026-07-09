@@ -1,0 +1,867 @@
+2026-07-08 14:55:31,590 - INFO - Инициализация базы данных...
+2026-07-08 14:55:31,592 - INFO - Запуск бота...
+2026-07-08 14:55:31,592 - INFO - Start polling
+2026-07-08 14:55:31,593 - INFO - Фоновый воркер проверки цен запущен
+2026-07-08 14:55:32,128 - INFO - Run polling for bot @Wdsdsdsdbot id=8955337292 - 'Kwazar'
+2026-07-08 14:55:42,360 - INFO - Update id=389771268 is handled. Duration 3667 ms by bot id=8955337292
+2026-07-08 14:55:45,270 - INFO - Update id=389771269 is handled. Duration 2038 ms by bot id=8955337292
+2026-07-08 14:55:53,298 - INFO - Update id=389771270 is handled. Duration 401 ms by bot id=8955337292
+2026-07-08 14:58:20,202 - WARNING - Received SIGINT signal
+2026-07-08 14:58:20,204 - INFO - Polling stopped for bot @Wdsdsdsdbot id=8955337292 - 'Kwazar'
+2026-07-08 14:58:20,205 - INFO - Polling stopped
+2026-07-08 14:58:20,459 - INFO - Фоновый воркер остановлен
+2026-07-08 07:27:13,389 - INFO - Инициализация базы данных...
+2026-07-08 07:27:13,390 - INFO - Запуск бота...
+2026-07-08 07:27:13,391 - INFO - Start polling
+2026-07-08 07:27:13,391 - INFO - Фоновый воркер проверки цен запущен
+2026-07-08 07:27:16,916 - INFO - Run polling for bot @Wdsdsdsdbot id=8955337292 - 'Kwazar'
+2026-07-08 07:29:53,264 - ERROR - Failed to fetch updates - TelegramNetworkError: HTTP Client says - ServerDisconnectedError: Server disconnected
+2026-07-08 07:29:53,264 - WARNING - Sleep for 1.000000 seconds and try again... (tryings = 0, bot id = 8955337292)
+2026-07-08 07:31:04,542 - ERROR - Failed to fetch updates - TelegramNetworkError: HTTP Client says - Request timeout error
+2026-07-08 07:31:04,543 - WARNING - Sleep for 1.228198 seconds and try again... (tryings = 1, bot id = 8955337292)
+2026-07-08 07:32:16,551 - ERROR - Failed to fetch updates - TelegramNetworkError: HTTP Client says - Request timeout error
+2026-07-08 07:32:16,552 - WARNING - Sleep for 1.470312 seconds and try again... (tryings = 2, bot id = 8955337292)
+2026-07-08 07:32:50,457 - INFO - Connection established (tryings = 3, bot id = 8955337292)
+2026-07-08 07:38:56,540 - ERROR - Сетевая ошибка при запросе к Binance: TimeoutError()
+2026-07-08 07:39:02,799 - INFO - Update id=389771271 is handled. Duration 4859 ms by bot id=8955337292
+2026-07-08 07:39:07,039 - INFO - Update id=389771272 is handled. Duration 313 ms by bot id=8955337292
+2026-07-08 07:39:09,985 - INFO - Update id=389771273 is handled. Duration 1971 ms by bot id=8955337292
+2026-07-08 07:39:11,193 - INFO - Update id=389771274 is handled. Duration 149 ms by bot id=8955337292
+2026-07-08 07:39:16,116 - INFO - Update id=389771275 is handled. Duration 3935 ms by bot id=8955337292
+2026-07-08 07:39:18,388 - INFO - Update id=389771276 is handled. Duration 151 ms by bot id=8955337292
+2026-07-08 07:39:40,047 - INFO - Update id=389771277 is handled. Duration 155 ms by bot id=8955337292
+2026-07-08 07:39:41,616 - INFO - Update id=389771278 is handled. Duration 307 ms by bot id=8955337292
+2026-07-08 07:43:38,542 - ERROR - Сетевая ошибка при запросе к Binance: TimeoutError()
+2026-07-08 08:00:19,429 - INFO - Update id=389771279 is handled. Duration 512 ms by bot id=8955337292
+2026-07-08 08:00:21,744 - INFO - Update id=389771280 is handled. Duration 290 ms by bot id=8955337292
+2026-07-08 08:00:25,104 - INFO - Update id=389771281 is handled. Duration 2167 ms by bot id=8955337292
+2026-07-08 08:00:47,573 - INFO - Update id=389771282 is handled. Duration 193 ms by bot id=8955337292
+2026-07-08 08:00:47,772 - INFO - Update id=389771283 is handled. Duration 150 ms by bot id=8955337292
+2026-07-08 08:00:52,456 - INFO - Update id=389771284 is handled. Duration 161 ms by bot id=8955337292
+2026-07-08 08:00:54,272 - INFO - Update id=389771285 is handled. Duration 402 ms by bot id=8955337292
+2026-07-08 08:01:02,088 - INFO - Update id=389771286 is handled. Duration 5597 ms by bot id=8955337292
+2026-07-08 08:01:15,527 - INFO - Update id=389771288 is handled. Duration 191 ms by bot id=8955337292
+2026-07-08 08:01:16,524 - INFO - Update id=389771287 is handled. Duration 6440 ms by bot id=8955337292
+2026-07-08 08:01:19,517 - INFO - Update id=389771289 is handled. Duration 172 ms by bot id=8955337292
+2026-07-08 08:01:21,638 - INFO - Update id=389771290 is handled. Duration 347 ms by bot id=8955337292
+2026-07-08 08:01:23,378 - INFO - Update id=389771291 is handled. Duration 179 ms by bot id=8955337292
+2026-07-08 08:01:28,144 - INFO - Update id=389771292 is handled. Duration 3871 ms by bot id=8955337292
+2026-07-08 08:01:28,425 - INFO - Update id=389771293 is handled. Duration 2738 ms by bot id=8955337292
+2026-07-08 08:01:46,987 - INFO - Update id=389771294 is handled. Duration 163 ms by bot id=8955337292
+2026-07-08 08:01:48,393 - INFO - Update id=389771295 is handled. Duration 333 ms by bot id=8955337292
+2026-07-08 08:01:51,896 - INFO - Update id=389771296 is not handled. Duration 9 ms by bot id=8955337292
+2026-07-08 08:11:37,927 - ERROR - Failed to fetch updates - TelegramNetworkError: HTTP Client says - ServerDisconnectedError: Server disconnected
+2026-07-08 08:11:37,927 - WARNING - Sleep for 1.000000 seconds and try again... (tryings = 0, bot id = 8955337292)
+2026-07-08 08:12:49,662 - INFO - Connection established (tryings = 1, bot id = 8955337292)
+2026-07-08 08:12:50,150 - INFO - Update id=389771301 is handled. Duration 483 ms by bot id=8955337292
+2026-07-08 08:12:50,217 - INFO - Update id=389771299 is handled. Duration 552 ms by bot id=8955337292
+2026-07-08 08:12:50,344 - INFO - Update id=389771300 is handled. Duration 678 ms by bot id=8955337292
+2026-07-08 08:12:51,983 - INFO - Update id=389771297 is handled. Duration 2319 ms by bot id=8955337292
+2026-07-08 08:12:52,133 - INFO - Update id=389771298 is handled. Duration 2469 ms by bot id=8955337292
+2026-07-08 08:15:00,904 - ERROR - Failed to fetch updates - TelegramNetworkError: HTTP Client says - Request timeout error
+2026-07-08 08:15:00,905 - WARNING - Sleep for 1.000000 seconds and try again... (tryings = 0, bot id = 8955337292)
+2026-07-08 08:15:13,913 - INFO - Connection established (tryings = 1, bot id = 8955337292)
+2026-07-08 08:15:33,806 - INFO - Update id=389771302 is handled. Duration 5501 ms by bot id=8955337292
+2026-07-08 08:15:44,520 - INFO - Update id=389771303 is handled. Duration 310 ms by bot id=8955337292
+2026-07-08 08:16:00,540 - INFO - Update id=389771304 is handled. Duration 2131 ms by bot id=8955337292
+2026-07-08 08:16:28,665 - INFO - Update id=389771305 is handled. Duration 162 ms by bot id=8955337292
+2026-07-08 08:16:41,788 - INFO - Update id=389771306 is handled. Duration 5236 ms by bot id=8955337292
+2026-07-08 08:19:08,913 - ERROR - Сетевая ошибка при запросе к Binance: TimeoutError()
+2026-07-08 08:20:29,908 - ERROR - Сетевая ошибка при запросе к Binance: TimeoutError()
+2026-07-08 08:22:40,079 - WARNING - Received SIGTERM signal
+2026-07-08 08:22:40,081 - INFO - Polling stopped for bot @Wdsdsdsdbot id=8955337292 - 'Kwazar'
+2026-07-08 08:22:40,083 - INFO - Polling stopped
+2026-07-08 08:22:40,336 - INFO - Фоновый воркер остановлен
+2026-07-08 08:22:44,562 - INFO - Инициализация базы данных...
+2026-07-08 08:22:44,563 - INFO - Запуск бота...
+2026-07-08 08:22:44,564 - INFO - Start polling
+2026-07-08 08:22:44,564 - INFO - Фоновый воркер проверки цен запущен
+2026-07-08 08:22:45,348 - INFO - Run polling for bot @Wdsdsdsdbot id=8955337292 - 'Kwazar'
+2026-07-08 08:23:31,910 - ERROR - Сетевая ошибка при запросе к Binance: TimeoutError()
+2026-07-08 08:34:39,047 - INFO - Update id=389771307 is handled. Duration 518 ms by bot id=8955337292
+2026-07-08 08:35:18,913 - ERROR - Сетевая ошибка при запросе к Binance: TimeoutError()
+2026-07-08 08:41:28,265 - INFO - Update id=389771308 is not handled. Duration 2 ms by bot id=8955337292
+2026-07-08 08:41:31,624 - INFO - Update id=389771309 is not handled. Duration 6 ms by bot id=8955337292
+2026-07-08 08:41:43,887 - INFO - Update id=389771310 is handled. Duration 172 ms by bot id=8955337292
+2026-07-08 08:42:11,290 - INFO - Update id=389771311 is not handled. Duration 2 ms by bot id=8955337292
+2026-07-08 16:42:32,758 - INFO - Инициализация базы данных...
+2026-07-08 16:42:32,759 - INFO - Запуск бота...
+2026-07-08 16:42:32,759 - INFO - Start polling
+2026-07-08 16:42:32,759 - INFO - Фоновый воркер проверки цен запущен
+2026-07-08 16:42:33,272 - INFO - Run polling for bot @Wdsdsdsdbot id=8955337292 - 'Kwazar'
+2026-07-08 08:42:33,409 - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2026-07-08 08:42:33,409 - WARNING - Sleep for 1.000000 seconds and try again... (tryings = 0, bot id = 8955337292)
+2026-07-08 16:42:37,528 - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2026-07-08 16:42:37,529 - WARNING - Sleep for 1.000000 seconds and try again... (tryings = 0, bot id = 8955337292)
+2026-07-08 08:42:38,640 - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2026-07-08 08:42:38,641 - WARNING - Sleep for 1.271053 seconds and try again... (tryings = 1, bot id = 8955337292)
+2026-07-08 08:42:42,279 - INFO - Connection established (tryings = 2, bot id = 8955337292)
+2026-07-08 08:42:42,285 - INFO - Update id=389771312 is not handled. Duration 3 ms by bot id=8955337292
+2026-07-08 16:42:43,034 - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2026-07-08 16:42:43,036 - WARNING - Sleep for 1.442488 seconds and try again... (tryings = 1, bot id = 8955337292)
+2026-07-08 08:42:44,626 - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2026-07-08 08:42:44,627 - WARNING - Sleep for 1.000000 seconds and try again... (tryings = 0, bot id = 8955337292)
+2026-07-08 08:42:47,230 - INFO - Connection established (tryings = 1, bot id = 8955337292)
+2026-07-08 08:42:47,238 - INFO - Update id=389771313 is not handled. Duration 3 ms by bot id=8955337292
+2026-07-08 16:42:48,745 - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2026-07-08 16:42:48,745 - WARNING - Sleep for 1.928216 seconds and try again... (tryings = 2, bot id = 8955337292)
+2026-07-08 08:42:50,004 - INFO - Update id=389771314 is handled. Duration 141 ms by bot id=8955337292
+2026-07-08 08:42:50,791 - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2026-07-08 08:42:50,791 - WARNING - Sleep for 1.000000 seconds and try again... (tryings = 0, bot id = 8955337292)
+2026-07-08 16:42:54,899 - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2026-07-08 16:42:54,900 - WARNING - Sleep for 2.514658 seconds and try again... (tryings = 3, bot id = 8955337292)
+2026-07-08 08:42:57,530 - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2026-07-08 08:42:57,531 - WARNING - Sleep for 1.394704 seconds and try again... (tryings = 1, bot id = 8955337292)
+2026-07-08 16:43:02,042 - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2026-07-08 16:43:02,042 - WARNING - Sleep for 3.410959 seconds and try again... (tryings = 4, bot id = 8955337292)
+2026-07-08 08:43:05,580 - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2026-07-08 08:43:05,581 - WARNING - Sleep for 1.787320 seconds and try again... (tryings = 2, bot id = 8955337292)
+2026-07-08 16:43:10,493 - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2026-07-08 16:43:10,493 - WARNING - Sleep for 4.385370 seconds and try again... (tryings = 5, bot id = 8955337292)
+2026-07-08 08:43:14,996 - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2026-07-08 08:43:14,996 - WARNING - Sleep for 2.323709 seconds and try again... (tryings = 3, bot id = 8955337292)
+2026-07-08 08:43:18,904 - ERROR - Сетевая ошибка при запросе к Binance: TimeoutError()
+2026-07-08 16:43:20,448 - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2026-07-08 16:43:20,448 - WARNING - Sleep for 4.974080 seconds and try again... (tryings = 6, bot id = 8955337292)
+2026-07-08 08:43:22,009 - ERROR - Failed to fetch updates - TelegramNetworkError: HTTP Client says - ClientOSError: [Errno 104] Connection reset by peer
+2026-07-08 08:43:22,010 - WARNING - Sleep for 2.979801 seconds and try again... (tryings = 4, bot id = 8955337292)
+2026-07-08 08:43:38,692 - INFO - Connection established (tryings = 5, bot id = 8955337292)
+2026-07-08 16:44:35,924 - ERROR - Failed to fetch updates - TelegramNetworkError: HTTP Client says - Request timeout error
+2026-07-08 16:44:35,924 - WARNING - Sleep for 4.949141 seconds and try again... (tryings = 7, bot id = 8955337292)
+2026-07-08 08:44:41,864 - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2026-07-08 08:44:41,865 - WARNING - Sleep for 1.000000 seconds and try again... (tryings = 0, bot id = 8955337292)
+2026-07-08 16:44:46,028 - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2026-07-08 16:44:46,029 - WARNING - Sleep for 5.035439 seconds and try again... (tryings = 8, bot id = 8955337292)
+2026-07-08 08:44:51,201 - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2026-07-08 08:44:51,201 - WARNING - Sleep for 1.199304 seconds and try again... (tryings = 1, bot id = 8955337292)
+2026-07-08 16:44:54,323 - WARNING - Received SIGINT signal
+2026-07-08 16:44:54,324 - INFO - Polling stopped for bot @Wdsdsdsdbot id=8955337292 - 'Kwazar'
+2026-07-08 16:44:54,325 - INFO - Polling stopped
+2026-07-08 16:44:54,579 - INFO - Фоновый воркер остановлен
+2026-07-08 08:45:02,555 - INFO - Connection established (tryings = 2, bot id = 8955337292)
+2026-07-08 08:45:41,982 - WARNING - Received SIGTERM signal
+2026-07-08 08:45:41,983 - INFO - Polling stopped for bot @Wdsdsdsdbot id=8955337292 - 'Kwazar'
+2026-07-08 08:45:41,983 - INFO - Polling stopped
+2026-07-08 08:45:42,234 - INFO - Фоновый воркер остановлен
+2026-07-08 08:46:01,295 - INFO - Инициализация базы данных...
+2026-07-08 08:46:01,296 - INFO - Запуск бота...
+2026-07-08 08:46:01,297 - INFO - Start polling
+2026-07-08 08:46:01,297 - INFO - Фоновый воркер проверки цен запущен
+2026-07-08 08:46:01,946 - INFO - Run polling for bot @Wdsdsdsdbot id=8955337292 - 'Kwazar'
+2026-07-08 08:46:54,284 - INFO - Update id=389771315 is not handled. Duration 2 ms by bot id=8955337292
+2026-07-08 08:50:54,952 - WARNING - Received SIGTERM signal
+2026-07-08 08:50:54,954 - INFO - Polling stopped for bot @Wdsdsdsdbot id=8955337292 - 'Kwazar'
+2026-07-08 08:50:54,954 - INFO - Polling stopped
+2026-07-08 08:50:55,206 - INFO - Фоновый воркер остановлен
+2026-07-08 08:53:31,140 - INFO - Инициализация базы данных...
+2026-07-08 08:53:31,142 - INFO - Запуск бота...
+2026-07-08 08:53:31,143 - INFO - Start polling
+2026-07-08 08:53:31,143 - INFO - Фоновый воркер проверки цен запущен
+2026-07-08 08:53:31,764 - INFO - Run polling for bot @Wdsdsdsdbot id=8955337292 - 'Kwazar'
+2026-07-08 08:53:32,615 - INFO - Update id=389771316 is handled. Duration 684 ms by bot id=8955337292
+2026-07-08 08:53:32,616 - INFO - Update id=389771317 is handled. Duration 681 ms by bot id=8955337292
+2026-07-08 08:55:33,620 - WARNING - Received SIGTERM signal
+2026-07-08 08:55:33,621 - INFO - Polling stopped for bot @Wdsdsdsdbot id=8955337292 - 'Kwazar'
+2026-07-08 08:55:33,621 - INFO - Polling stopped
+2026-07-08 08:55:33,873 - INFO - Фоновый воркер остановлен
+2026-07-08 08:55:39,483 - INFO - Инициализация базы данных...
+2026-07-08 08:55:39,485 - INFO - Запуск бота...
+2026-07-08 08:55:39,485 - INFO - Start polling
+2026-07-08 08:55:39,486 - INFO - Фоновый воркер проверки цен запущен
+2026-07-08 08:55:40,077 - INFO - Run polling for bot @Wdsdsdsdbot id=8955337292 - 'Kwazar'
+2026-07-08 08:58:44,014 - WARNING - Received SIGTERM signal
+2026-07-08 08:58:44,015 - INFO - Polling stopped for bot @Wdsdsdsdbot id=8955337292 - 'Kwazar'
+2026-07-08 08:58:44,016 - INFO - Polling stopped
+2026-07-08 08:58:44,266 - INFO - Фоновый воркер остановлен
+2026-07-08 08:58:50,366 - INFO - Инициализация базы данных...
+2026-07-08 08:58:50,367 - INFO - Запуск бота...
+2026-07-08 08:58:50,368 - INFO - Start polling
+2026-07-08 08:58:50,368 - INFO - Фоновый воркер проверки цен запущен
+2026-07-08 08:58:50,963 - INFO - Run polling for bot @Wdsdsdsdbot id=8955337292 - 'Kwazar'
+2026-07-08 08:58:54,299 - INFO - Update id=389771318 is handled. Duration 679 ms by bot id=8955337292
+2026-07-08 08:58:56,926 - INFO - Update id=389771319 is handled. Duration 159 ms by bot id=8955337292
+2026-07-08 08:58:59,170 - INFO - Update id=389771320 is handled. Duration 185 ms by bot id=8955337292
+2026-07-08 08:59:02,495 - INFO - Update id=389771321 is handled. Duration 1893 ms by bot id=8955337292
+2026-07-08 09:00:01,267 - WARNING - Received SIGTERM signal
+2026-07-08 09:00:01,268 - INFO - Polling stopped for bot @Wdsdsdsdbot id=8955337292 - 'Kwazar'
+2026-07-08 09:00:01,268 - INFO - Polling stopped
+2026-07-08 09:00:01,519 - INFO - Фоновый воркер остановлен
+2026-07-08 09:00:07,668 - INFO - Инициализация базы данных...
+2026-07-08 09:00:07,670 - INFO - Запуск бота...
+2026-07-08 09:00:07,671 - INFO - Start polling
+2026-07-08 09:00:07,671 - INFO - Фоновый воркер проверки цен запущен
+2026-07-08 09:00:08,330 - INFO - Run polling for bot @Wdsdsdsdbot id=8955337292 - 'Kwazar'
+2026-07-08 09:00:09,122 - INFO - Update id=389771322 is handled. Duration 639 ms by bot id=8955337292
+2026-07-08 09:00:11,318 - INFO - Update id=389771323 is handled. Duration 192 ms by bot id=8955337292
+2026-07-08 09:00:25,257 - INFO - Update id=389771324 is handled. Duration 161 ms by bot id=8955337292
+2026-07-08 09:00:29,235 - INFO - Update id=389771325 is handled. Duration 2129 ms by bot id=8955337292
+2026-07-08 09:00:31,491 - INFO - Update id=389771326 is handled. Duration 166 ms by bot id=8955337292
+2026-07-08 09:00:33,675 - INFO - Update id=389771327 is handled. Duration 208 ms by bot id=8955337292
+2026-07-08 09:00:36,712 - INFO - Update id=389771328 is handled. Duration 1733 ms by bot id=8955337292
+2026-07-08 09:04:16,224 - INFO - Update id=389771329 is handled. Duration 2257 ms by bot id=8955337292
+2026-07-08 09:04:20,889 - INFO - Update id=389771330 is handled. Duration 170 ms by bot id=8955337292
+2026-07-08 09:04:45,940 - INFO - Update id=389771331 is handled. Duration 2001 ms by bot id=8955337292
+2026-07-08 09:19:41,809 - INFO - Update id=389771332 is handled. Duration 342 ms by bot id=8955337292
+2026-07-08 09:19:44,845 - INFO - Update id=389771333 is handled. Duration 2133 ms by bot id=8955337292
+2026-07-08 09:19:56,407 - INFO - Update id=389771334 is handled. Duration 189 ms by bot id=8955337292
+2026-07-08 09:20:00,897 - INFO - Update id=389771335 is handled. Duration 314 ms by bot id=8955337292
+2026-07-08 09:20:02,000 - INFO - Update id=389771336 is handled. Duration 179 ms by bot id=8955337292
+2026-07-08 09:20:03,983 - INFO - Update id=389771337 is handled. Duration 149 ms by bot id=8955337292
+2026-07-08 09:24:32,790 - WARNING - Received SIGTERM signal
+2026-07-08 09:24:32,792 - INFO - Polling stopped for bot @Wdsdsdsdbot id=8955337292 - 'Kwazar'
+2026-07-08 09:24:32,792 - INFO - Polling stopped
+2026-07-08 09:24:33,047 - INFO - Фоновый воркер остановлен
+2026-07-08 09:24:38,485 - INFO - Инициализация базы данных...
+2026-07-08 09:24:38,486 - INFO - Запуск бота...
+2026-07-08 09:24:38,487 - INFO - Start polling
+2026-07-08 09:24:38,487 - INFO - Фоновый воркер проверки цен запущен
+2026-07-08 09:24:39,118 - INFO - Run polling for bot @Wdsdsdsdbot id=8955337292 - 'Kwazar'2026-07-08 12:15:07,265 - INFO - Update id=389771422 is handled. Duration 323 ms by bot id=8955337292
+2026-07-08 12:15:10,218 - INFO - Update id=389771423 is handled. Duration 2275 ms by bot id=8955337292
+2026-07-08 12:15:14,420 - INFO - Update id=389771424 is handled. Duration 192 ms by bot id=8955337292
+2026-07-08 12:15:18,996 - INFO - Update id=389771425 is handled. Duration 1655 ms by bot id=8955337292
+2026-07-08 12:25:35,693 - ERROR - Сетевая ошибка при запросе к Binance: TimeoutError()
+2026-07-09 04:15:16,440 - ERROR - Failed to fetch updates - TelegramNetworkError: HTTP Client says - Request timeout error
+2026-07-09 04:15:16,441 - WARNING - Sleep for 1.000000 seconds and try again... (tryings = 0, bot id = 8955337292)
+2026-07-09 04:15:18,079 - INFO - Connection established (tryings = 1, bot id = 8955337292)
+2026-07-09 04:15:18,725 - INFO - Update id=389771427 is handled. Duration 643 ms by bot id=8955337292
+2026-07-09 04:15:18,842 - INFO - Update id=389771426 is handled. Duration 761 ms by bot id=8955337292
+2026-07-09 04:15:23,755 - WARNING - Received SIGTERM signal
+2026-07-09 04:15:23,762 - INFO - Polling stopped for bot @Wdsdsdsdbot id=8955337292 - 'Kwazar_Cripto'
+2026-07-09 04:15:23,762 - INFO - Polling stopped
+2026-07-09 04:15:24,017 - INFO - Фоновый воркер остановлен
+2026-07-09 04:15:36,438 - INFO - Инициализация базы данных...
+2026-07-09 04:15:36,441 - INFO - Запуск бота...
+2026-07-09 04:15:36,442 - INFO - Start polling
+2026-07-09 04:15:36,443 - INFO - Фоновый воркер проверки цен запущен
+2026-07-09 04:15:37,015 - INFO - Run polling for bot @Wdsdsdsdbot id=8955337292 - 'Kwazar_Cripto'
+2026-07-09 04:15:40,133 - INFO - Update id=389771428 is handled. Duration 737 ms by bot id=8955337292
+2026-07-09 04:15:44,070 - INFO - Update id=389771429 is handled. Duration 2282 ms by bot id=8955337292
+2026-07-09 04:15:49,460 - INFO - Update id=389771430 is handled. Duration 171 ms by bot id=8955337292
+2026-07-09 04:15:55,996 - INFO - Update id=389771431 is handled. Duration 2237 ms by bot id=8955337292
+2026-07-09 04:16:02,377 - INFO - Update id=389771432 is handled. Duration 2221 ms by bot id=8955337292
+2026-07-09 04:16:07,506 - INFO - Update id=389771433 is handled. Duration 229 ms by bot id=8955337292
+2026-07-09 04:16:08,900 - INFO - Update id=389771434 is handled. Duration 137 ms by bot id=8955337292
+2026-07-09 04:16:17,283 - INFO - Update id=389771435 is handled. Duration 6538 ms by bot id=8955337292
+2026-07-09 04:16:39,534 - INFO - Update id=389771436 is handled. Duration 162 ms by bot id=8955337292
+2026-07-09 04:16:40,903 - INFO - Update id=389771437 is handled. Duration 146 ms by bot id=8955337292
+2026-07-09 04:16:42,868 - INFO - Update id=389771438 is handled. Duration 151 ms by bot id=8955337292
+2026-07-09 04:17:37,709 - WARNING - Received SIGTERM signal
+2026-07-09 04:17:37,711 - INFO - Polling stopped for bot @Wdsdsdsdbot id=8955337292 - 'Kwazar_Cripto'
+2026-07-09 04:17:37,711 - INFO - Polling stopped
+2026-07-09 04:17:37,963 - INFO - Фоновый воркер остановлен
+2026-07-09 04:17:45,219 - INFO - Инициализация базы данных...
+2026-07-09 04:17:45,220 - INFO - Запуск бота...
+2026-07-09 04:17:45,221 - INFO - Start polling
+2026-07-09 04:17:45,221 - INFO - Фоновый воркер проверки цен запущен
+2026-07-09 04:17:45,823 - INFO - Run polling for bot @Wdsdsdsdbot id=8955337292 - 'Kwazar_Cripto'
+2026-07-09 04:17:46,842 - INFO - Update id=389771439 is handled. Duration 879 ms by bot id=8955337292
+2026-07-09 04:17:48,180 - INFO - Update id=389771440 is handled. Duration 140 ms by bot id=8955337292
+2026-07-09 04:18:54,742 - WARNING - Received SIGTERM signal
+2026-07-09 04:18:54,743 - INFO - Polling stopped for bot @Wdsdsdsdbot id=8955337292 - 'Kwazar_Cripto'
+2026-07-09 04:18:54,744 - INFO - Polling stopped
+2026-07-09 04:18:54,996 - INFO - Фоновый воркер остановлен
+2026-07-09 04:19:01,392 - INFO - Инициализация базы данных...
+2026-07-09 04:19:01,394 - INFO - Запуск бота...
+2026-07-09 04:19:01,395 - INFO - Start polling
+2026-07-09 04:19:01,395 - INFO - Фоновый воркер проверки цен запущен
+2026-07-09 04:19:01,982 - INFO - Run polling for bot @Wdsdsdsdbot id=8955337292 - 'Kwazar_Cripto'
+2026-07-09 04:19:02,870 - INFO - Update id=389771441 is handled. Duration 756 ms by bot id=8955337292
+2026-07-09 04:19:04,257 - INFO - Update id=389771442 is handled. Duration 230 ms by bot id=8955337292
+2026-07-09 04:19:05,304 - INFO - Update id=389771443 is handled. Duration 141 ms by bot id=8955337292
+2026-07-09 04:19:11,744 - INFO - Update id=389771444 is handled. Duration 2320 ms by bot id=8955337292
+2026-07-09 04:19:19,570 - INFO - Update id=389771445 is handled. Duration 148 ms by bot id=8955337292
+2026-07-09 04:19:21,791 - INFO - Update id=389771446 is handled. Duration 290 ms by bot id=8955337292
+2026-07-09 04:19:26,553 - INFO - Update id=389771447 is handled. Duration 2177 ms by bot id=8955337292
+2026-07-09 04:19:34,790 - INFO - Update id=389771448 is handled. Duration 153 ms by bot id=8955337292
+2026-07-09 04:25:08,444 - ERROR - Сетевая ошибка при запросе к Binance: TimeoutError()
+2026-07-09 04:25:49,664 - INFO - Инициализация базы данных...
+2026-07-09 04:25:49,666 - INFO - Запуск бота...
+2026-07-09 04:25:49,667 - INFO - Start polling
+2026-07-09 04:25:49,667 - INFO - Фоновый воркер проверки цен запущен
+2026-07-09 04:25:50,277 - INFO - Run polling for bot @Wdsdsdsdbot id=8955337292 - 'Kwazar_Cripto'
+2026-07-09 04:32:28,439 - ERROR - Сетевая ошибка при запросе к Binance: TimeoutError()
+2026-07-09 04:46:32,438 - ERROR - Сетевая ошибка при запросе к Binance: TimeoutError()
+2026-07-09 04:53:09,470 - WARNING - Received SIGTERM signal
+2026-07-09 04:53:09,474 - INFO - Polling stopped for bot @Wdsdsdsdbot id=8955337292 - 'Kwazar_Cripto'
+2026-07-09 04:53:09,474 - INFO - Polling stopped
+2026-07-09 04:53:09,731 - INFO - Фоновый воркер остановлен
+2026-07-09 04:53:16,163 - INFO - Инициализация базы данных...
+2026-07-09 04:53:16,171 - INFO - Запуск бота...
+2026-07-09 04:53:16,172 - INFO - Start polling
+2026-07-09 04:53:16,172 - INFO - Фоновый воркер проверки цен запущен
+2026-07-09 04:53:16,762 - INFO - Run polling for bot @Wdsdsdsdbot id=8955337292 - 'Kwazar_Cripto'
+2026-07-09 04:55:30,666 - WARNING - Received SIGTERM signal
+2026-07-09 04:55:30,667 - INFO - Polling stopped for bot @Wdsdsdsdbot id=8955337292 - 'Kwazar_Cripto'
+2026-07-09 04:55:30,667 - INFO - Polling stopped
+2026-07-09 04:55:30,920 - INFO - Фоновый воркер остановлен
+2026-07-09 04:55:37,922 - INFO - Инициализация базы данных...
+2026-07-09 04:55:37,924 - INFO - Запуск бота...
+2026-07-09 04:55:37,925 - INFO - Start polling
+2026-07-09 04:55:37,925 - INFO - Фоновый воркер проверки цен запущен
+2026-07-09 04:55:38,522 - INFO - Run polling for bot @Wdsdsdsdbot id=8955337292 - 'Kwazar_Cripto'
+2026-07-09 04:55:39,435 - INFO - Update id=389771449 is handled. Duration 782 ms by bot id=8955337292
+2026-07-09 04:56:23,634 - INFO - Update id=389771450 is not handled. Duration 2 ms by bot id=8955337292
+2026-07-09 04:56:23,635 - ERROR - Cause exception while process update id=389771450 by bot id=8955337292
+ProgrammingError: parameters are of unsupported type
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.12/site-packages/aiogram/dispatcher/dispatcher.py", line 320, in _process_update
+    response = await self.feed_update(bot, update, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/aiogram/dispatcher/dispatcher.py", line 164, in feed_update
+    response = await self.update.wrap_outer_middleware(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/aiogram/dispatcher/middlewares/error.py", line 27, in __call__
+    return await handler(event, data)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/aiogram/dispatcher/middlewares/user_context.py", line 58, in __call__
+    return await handler(event, data)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/aiogram/fsm/middleware.py", line 43, in __call__
+    return await handler(event, data)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/aiogram/dispatcher/event/telegram.py", line 126, in trigger
+    return await wrapped_inner(event, kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/aiogram/dispatcher/event/handler.py", line 71, in call
+    return await wrapped()
+           ^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/aiogram/dispatcher/dispatcher.py", line 283, in _listen_update
+    return await self.propagate_event(update_type=update_type, event=event, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/aiogram/dispatcher/router.py", line 165, in propagate_event
+    return await observer.wrap_outer_middleware(_wrapped, event=event, data=kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/aiogram/dispatcher/router.py", line 157, in _wrapped
+    return await self._propagate_event(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/aiogram/dispatcher/router.py", line 185, in _propagate_event
+    response = await observer.trigger(event, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/aiogram/dispatcher/event/telegram.py", line 126, in trigger
+    return await wrapped_inner(event, kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/aiogram/dispatcher/event/handler.py", line 71, in call
+    return await wrapped()
+           ^^^^^^^^^^^^^^^
+  File "/app/main.py", line 115, in cmd_start
+    await add_users(message.chat.id)
+  File "/app/database_and_api.py", line 53, in add_users
+    await db.execute("INSERT OR IGNORE INTO users (user_id) VALUES (?)", (user_id))
+  File "/usr/local/lib/python3.12/site-packages/aiosqlite/core.py", line 223, in execute
+    cursor = await self._execute(self._conn.execute, sql, parameters)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/aiosqlite/core.py", line 160, in _execute
+    return await future
+           ^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/aiosqlite/core.py", line 63, in _connection_worker_thread
+    result = function()
+             ^^^^^^^^^^
+sqlite3.ProgrammingError: parameters are of unsupported type
+2026-07-09 04:57:55,436 - WARNING - Received SIGTERM signal
+2026-07-09 04:57:55,437 - INFO - Polling stopped for bot @Wdsdsdsdbot id=8955337292 - 'Kwazar_Cripto'
+2026-07-09 04:57:55,437 - INFO - Polling stopped
+2026-07-09 04:57:55,690 - INFO - Фоновый воркер остановлен
+2026-07-09 04:58:01,725 - INFO - Инициализация базы данных...
+2026-07-09 04:58:01,727 - INFO - Запуск бота...
+2026-07-09 04:58:01,728 - INFO - Start polling
+2026-07-09 04:58:01,728 - INFO - Фоновый воркер проверки цен запущен
+2026-07-09 04:58:02,314 - INFO - Run polling for bot @Wdsdsdsdbot id=8955337292 - 'Kwazar_Cripto'
+2026-07-09 04:58:06,285 - INFO - Update id=389771451 is handled. Duration 753 ms by bot id=8955337292
+2026-07-09 05:00:25,437 - INFO - Update id=389771452 is handled. Duration 182 ms by bot id=8955337292
+2026-07-09 05:11:13,220 - WARNING - Received SIGTERM signal
+2026-07-09 05:11:13,224 - INFO - Polling stopped for bot @Wdsdsdsdbot id=8955337292 - 'Kwazar_Cripto'
+2026-07-09 05:11:13,224 - INFO - Polling stopped
+2026-07-09 05:11:13,484 - INFO - Фоновый воркер остановлен
+2026-07-09 05:11:20,414 - INFO - Инициализация базы данных...
+2026-07-09 05:11:20,415 - INFO - Запуск бота...
+2026-07-09 05:11:20,416 - INFO - Start polling
+2026-07-09 05:11:20,416 - INFO - Фоновый воркер проверки цен запущен
+2026-07-09 05:11:21,072 - INFO - Run polling for bot @Wdsdsdsdbot id=8955337292 - 'Kwazar_Cripto'
+2026-07-09 05:13:45,169 - WARNING - Received SIGTERM signal
+2026-07-09 05:13:45,169 - INFO - Polling stopped for bot @Wdsdsdsdbot id=8955337292 - 'Kwazar_Cripto'
+2026-07-09 05:13:45,170 - INFO - Polling stopped
+2026-07-09 05:13:45,424 - INFO - Фоновый воркер остановлен
+2026-07-09 05:13:52,779 - INFO - Инициализация базы данных...
+2026-07-09 05:13:52,784 - INFO - Запуск бота...
+2026-07-09 05:13:52,786 - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-07-09 05:13:52,789 - INFO - Added job "send_morning_newsletter" to job store "default"
+2026-07-09 05:13:52,789 - INFO - Scheduler started
+2026-07-09 05:13:52,789 - INFO - Планировщик задач запущен!
+2026-07-09 05:13:52,789 - INFO - Start polling
+2026-07-09 05:13:52,791 - INFO - Фоновый воркер проверки цен запущен
+2026-07-09 05:13:53,372 - INFO - Run polling for bot @Wdsdsdsdbot id=8955337292 - 'Kwazar_Cripto'
+2026-07-09 05:15:20,930 - INFO - Update id=389771453 is handled. Duration 634 ms by bot id=8955337292
+2026-07-09 05:15:47,490 - WARNING - Received SIGTERM signal
+2026-07-09 05:15:47,491 - INFO - Polling stopped for bot @Wdsdsdsdbot id=8955337292 - 'Kwazar_Cripto'
+2026-07-09 05:15:47,492 - INFO - Polling stopped
+2026-07-09 05:15:47,745 - INFO - Фоновый воркер остановлен
+2026-07-09 05:15:54,686 - INFO - Инициализация базы данных...
+2026-07-09 05:15:54,687 - INFO - Запуск бота...
+2026-07-09 05:15:54,689 - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-07-09 05:15:54,690 - INFO - Added job "send_morning_newsletter" to job store "default"
+2026-07-09 05:15:54,690 - INFO - Scheduler started
+2026-07-09 05:15:54,690 - INFO - Планировщик задач запущен!
+2026-07-09 05:15:54,690 - INFO - Start polling
+2026-07-09 05:15:54,690 - INFO - Фоновый воркер проверки цен запущен
+2026-07-09 05:15:55,293 - INFO - Run polling for bot @Wdsdsdsdbot id=8955337292 - 'Kwazar_Cripto'
+2026-07-09 05:16:54,693 - INFO - Running job "send_morning_newsletter (trigger: interval[0:01:00], next run at: 2026-07-09 08:17:54 MSK)" (scheduled at 2026-07-09 08:16:54.689343+03:00)
+2026-07-09 05:16:54,693 - INFO - Начинаем утреннюю рассылку...
+2026-07-09 05:16:57,165 - INFO - Рассылка завершена. Доставлено 2 пользователям.
+2026-07-09 05:16:57,166 - INFO - Job "send_morning_newsletter (trigger: interval[0:01:00], next run at: 2026-07-09 08:17:54 MSK)" executed successfully
+2026-07-09 05:17:54,697 - INFO - Running job "send_morning_newsletter (trigger: interval[0:01:00], next run at: 2026-07-09 08:18:54 MSK)" (scheduled at 2026-07-09 08:17:54.689343+03:00)
+2026-07-09 05:17:54,697 - INFO - Начинаем утреннюю рассылку...
+2026-07-09 05:17:56,680 - INFO - Рассылка завершена. Доставлено 2 пользователям.
+2026-07-09 05:17:56,680 - INFO - Job "send_morning_newsletter (trigger: interval[0:01:00], next run at: 2026-07-09 08:18:54 MSK)" executed successfully
+2026-07-09 05:18:54,696 - INFO - Running job "send_morning_newsletter (trigger: interval[0:01:00], next run at: 2026-07-09 08:19:54 MSK)" (scheduled at 2026-07-09 08:18:54.689343+03:00)
+2026-07-09 05:18:54,696 - INFO - Начинаем утреннюю рассылку...
+2026-07-09 05:18:56,535 - INFO - Рассылка завершена. Доставлено 2 пользователям.
+2026-07-09 05:18:56,535 - INFO - Job "send_morning_newsletter (trigger: interval[0:01:00], next run at: 2026-07-09 08:19:54 MSK)" executed successfully
+2026-07-09 05:19:50,097 - WARNING - Received SIGTERM signal
+2026-07-09 05:19:50,098 - INFO - Polling stopped for bot @Wdsdsdsdbot id=8955337292 - 'Kwazar_Cripto'
+2026-07-09 05:19:50,098 - INFO - Polling stopped
+2026-07-09 05:19:50,350 - INFO - Фоновый воркер остановлен
+2026-07-09 05:19:56,747 - INFO - Инициализация базы данных...
+2026-07-09 05:19:56,749 - INFO - Запуск бота...
+2026-07-09 05:19:56,752 - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-07-09 05:19:56,752 - INFO - Added job "send_morning_newsletter" to job store "default"
+2026-07-09 05:19:56,752 - INFO - Scheduler started
+2026-07-09 05:19:56,753 - INFO - Планировщик задач запущен!
+2026-07-09 05:19:56,753 - INFO - Start polling
+2026-07-09 05:19:56,753 - INFO - Фоновый воркер проверки цен запущен
+2026-07-09 05:19:57,361 - INFO - Run polling for bot @Wdsdsdsdbot id=8955337292 - 'Kwazar_Cripto'
+2026-07-09 05:28:28,786 - INFO - Update id=389771454 is handled. Duration 741 ms by bot id=8955337292
+2026-07-09 05:30:00,006 - INFO - Running job "send_morning_newsletter (trigger: cron[hour='8', minute='30'], next run at: 2026-07-10 08:30:00 MSK)" (scheduled at 2026-07-09 08:30:00+03:00)
+2026-07-09 05:30:00,007 - INFO - Начинаем утреннюю рассылку...
+2026-07-09 05:30:01,970 - INFO - Рассылка завершена. Доставлено 2 пользователям.
+2026-07-09 05:30:01,973 - INFO - Job "send_morning_newsletter (trigger: cron[hour='8', minute='30'], next run at: 2026-07-10 08:30:00 MSK)" executed successfully
+2026-07-09 05:33:08,313 - WARNING - Received SIGTERM signal
+2026-07-09 05:33:08,317 - INFO - Polling stopped for bot @Wdsdsdsdbot id=8955337292 - 'Kwazar_Cripto'
+2026-07-09 05:33:08,317 - INFO - Polling stopped
+2026-07-09 05:33:08,571 - INFO - Фоновый воркер остановлен
+2026-07-09 05:33:16,055 - INFO - Инициализация базы данных...
+2026-07-09 05:33:16,056 - INFO - Запуск бота...
+2026-07-09 05:33:16,060 - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-07-09 05:33:16,060 - INFO - Added job "send_morning_newsletter" to job store "default"
+2026-07-09 05:33:16,060 - INFO - Scheduler started
+2026-07-09 05:33:16,060 - INFO - Планировщик задач запущен!
+2026-07-09 05:33:16,060 - INFO - Start polling
+2026-07-09 05:33:16,061 - INFO - Фоновый воркер проверки цен запущен
+2026-07-09 05:33:16,669 - INFO - Run polling for bot @Wdsdsdsdbot id=8955337292 - 'Kwazar_Cripto'
+2026-07-09 05:33:38,986 - WARNING - Received SIGTERM signal
+2026-07-09 05:33:38,987 - INFO - Polling stopped for bot @Wdsdsdsdbot id=8955337292 - 'Kwazar_Cripto'
+2026-07-09 05:33:38,987 - INFO - Polling stopped
+2026-07-09 05:33:39,238 - INFO - Фоновый воркер остановлен
+2026-07-09 05:33:46,814 - INFO - Инициализация базы данных...
+2026-07-09 05:33:46,816 - INFO - Запуск бота...
+2026-07-09 05:33:46,819 - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-07-09 05:33:46,820 - INFO - Added job "send_morning_newsletter" to job store "default"
+2026-07-09 05:33:46,820 - INFO - Scheduler started
+2026-07-09 05:33:46,820 - INFO - Планировщик задач запущен!
+2026-07-09 05:33:46,820 - INFO - Start polling
+2026-07-09 05:33:46,820 - INFO - Фоновый воркер проверки цен запущен
+2026-07-09 05:33:47,399 - INFO - Run polling for bot @Wdsdsdsdbot id=8955337292 - 'Kwazar_Cripto'
+2026-07-09 05:33:51,199 - INFO - Update id=389771455 is handled. Duration 786 ms by bot id=8955337292
+2026-07-09 05:33:53,043 - INFO - Update id=389771456 is handled. Duration 198 ms by bot id=8955337292
+2026-07-09 05:34:57,657 - WARNING - Received SIGTERM signal
+2026-07-09 05:34:57,660 - INFO - Polling stopped for bot @Wdsdsdsdbot id=8955337292 - 'Kwazar_Cripto'
+2026-07-09 05:34:57,661 - INFO - Polling stopped
+2026-07-09 05:34:57,914 - INFO - Фоновый воркер остановлен
+2026-07-09 05:35:04,307 - INFO - Инициализация базы данных...
+2026-07-09 05:35:04,309 - INFO - Запуск бота...
+2026-07-09 05:35:04,313 - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-07-09 05:35:04,314 - INFO - Added job "send_morning_newsletter" to job store "default"
+2026-07-09 05:35:04,314 - INFO - Scheduler started
+2026-07-09 05:35:04,314 - INFO - Планировщик задач запущен!
+2026-07-09 05:35:04,314 - INFO - Start polling
+2026-07-09 05:35:04,314 - INFO - Фоновый воркер проверки цен запущен
+2026-07-09 05:35:04,923 - INFO - Run polling for bot @Wdsdsdsdbot id=8955337292 - 'Kwazar_Cripto'
+2026-07-09 05:40:33,060 - ERROR - Failed to fetch updates - TelegramNetworkError: HTTP Client says - ServerDisconnectedError: Server disconnected
+2026-07-09 05:40:33,067 - WARNING - Sleep for 1.000000 seconds and try again... (tryings = 0, bot id = 8955337292)
+2026-07-09 05:41:44,452 - ERROR - Failed to fetch updates - TelegramNetworkError: HTTP Client says - Request timeout error
+2026-07-09 05:41:44,455 - WARNING - Sleep for 1.278290 seconds and try again... (tryings = 1, bot id = 8955337292)
+2026-07-09 05:42:56,461 - ERROR - Failed to fetch updates - TelegramNetworkError: HTTP Client says - Request timeout error
+2026-07-09 05:42:56,461 - WARNING - Sleep for 1.737043 seconds and try again... (tryings = 2, bot id = 8955337292)
+2026-07-09 05:44:08,441 - ERROR - Failed to fetch updates - TelegramNetworkError: HTTP Client says - Request timeout error
+2026-07-09 05:44:08,441 - WARNING - Sleep for 2.186962 seconds and try again... (tryings = 3, bot id = 8955337292)
+2026-07-09 05:45:21,454 - ERROR - Failed to fetch updates - TelegramNetworkError: HTTP Client says - Request timeout error
+2026-07-09 05:45:21,454 - WARNING - Sleep for 2.829376 seconds and try again... (tryings = 4, bot id = 8955337292)
+2026-07-09 05:46:34,437 - ERROR - Failed to fetch updates - TelegramNetworkError: HTTP Client says - Request timeout error
+2026-07-09 05:46:34,437 - WARNING - Sleep for 3.802267 seconds and try again... (tryings = 5, bot id = 8955337292)
+2026-07-09 05:47:48,449 - ERROR - Failed to fetch updates - TelegramNetworkError: HTTP Client says - Request timeout error
+2026-07-09 05:47:48,449 - WARNING - Sleep for 4.994867 seconds and try again... (tryings = 6, bot id = 8955337292)
+2026-07-09 05:49:04,433 - ERROR - Failed to fetch updates - TelegramNetworkError: HTTP Client says - Request timeout error
+2026-07-09 05:49:04,435 - WARNING - Sleep for 5.015744 seconds and try again... (tryings = 7, bot id = 8955337292)
+2026-07-09 05:50:20,448 - ERROR - Failed to fetch updates - TelegramNetworkError: HTTP Client says - Request timeout error
+2026-07-09 05:50:20,448 - WARNING - Sleep for 4.930299 seconds and try again... (tryings = 8, bot id = 8955337292)
+2026-07-09 05:51:12,121 - INFO - Connection established (tryings = 9, bot id = 8955337292)
+2026-07-09 10:50:03,045 - INFO - Инициализация базы данных...
+2026-07-09 10:50:03,047 - INFO - Запуск бота...
+2026-07-09 10:50:03,051 - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-07-09 10:50:03,051 - INFO - Added job "send_morning_newsletter" to job store "default"
+2026-07-09 10:50:03,051 - INFO - Scheduler started
+2026-07-09 10:50:03,051 - INFO - Планировщик задач запущен!
+2026-07-09 10:50:03,052 - INFO - Start polling
+2026-07-09 10:50:03,052 - INFO - Фоновый воркер проверки цен запущен
+2026-07-09 10:51:03,189 - INFO - Polling stopped
+2026-07-09 10:51:03,440 - INFO - Фоновый воркер остановлен
+2026-07-09 10:51:08,790 - INFO - Инициализация базы данных...
+2026-07-09 10:51:08,792 - INFO - Запуск бота...
+2026-07-09 10:51:08,794 - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-07-09 10:51:08,795 - INFO - Added job "send_morning_newsletter" to job store "default"
+2026-07-09 10:51:08,795 - INFO - Scheduler started
+2026-07-09 10:51:08,795 - INFO - Планировщик задач запущен!
+2026-07-09 10:51:08,795 - INFO - Start polling
+2026-07-09 10:51:08,796 - INFO - Фоновый воркер проверки цен запущен
+2026-07-09 10:51:10,725 - INFO - Run polling for bot @Wdsdsdsdbot id=8955337292 - 'Kwazar_Cripto'
+2026-07-09 10:51:11,414 - INFO - Update id=389771457 is handled. Duration 536 ms by bot id=8955337292
+2026-07-09 10:51:37,786 - ERROR - Failed to fetch updates - TelegramNetworkError: HTTP Client says - ClientOSError: [Errno 104] Connection reset by peer
+2026-07-09 10:51:37,788 - WARNING - Sleep for 1.000000 seconds and try again... (tryings = 0, bot id = 8955337292)
+2026-07-09 10:52:49,170 - ERROR - Failed to fetch updates - TelegramNetworkError: HTTP Client says - Request timeout error
+2026-07-09 10:52:49,173 - WARNING - Sleep for 1.197582 seconds and try again... (tryings = 1, bot id = 8955337292)
+2026-07-09 10:53:50,383 - ERROR - Failed to fetch updates - TelegramNetworkError: HTTP Client says - ClientConnectorError: Cannot connect to host api.telegram.org:443 ssl:default [None]
+2026-07-09 10:53:50,383 - WARNING - Sleep for 1.522120 seconds and try again... (tryings = 2, bot id = 8955337292)
+2026-07-09 10:54:03,571 - INFO - Connection established (tryings = 3, bot id = 8955337292)
+2026-07-09 10:55:20,170 - ERROR - Сетевая ошибка при запросе к Binance: TimeoutError()
+2026-07-09 11:19:52,174 - ERROR - Сетевая ошибка при запросе к Binance: TimeoutError()
+2026-07-09 11:26:17,166 - ERROR - Сетевая ошибка при запросе к Binance: TimeoutError()
+2026-07-09 11:30:40,365 - WARNING - Received SIGTERM signal
+2026-07-09 11:30:40,366 - INFO - Polling stopped for bot @Wdsdsdsdbot id=8955337292 - 'Kwazar_Cripto'
+2026-07-09 11:30:40,367 - INFO - Polling stopped
+2026-07-09 11:30:40,618 - INFO - Фоновый воркер остановлен
+2026-07-09 11:30:47,842 - INFO - Инициализация базы данных...
+2026-07-09 11:30:47,843 - INFO - Запуск бота...
+2026-07-09 11:30:47,846 - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-07-09 11:30:47,847 - INFO - Added job "send_morning_newsletter" to job store "default"
+2026-07-09 11:30:47,847 - INFO - Scheduler started
+2026-07-09 11:30:47,847 - INFO - Планировщик задач запущен!
+2026-07-09 11:30:47,847 - INFO - Start polling
+2026-07-09 11:30:47,848 - INFO - Фоновый воркер проверки цен запущен
+2026-07-09 11:30:48,289 - INFO - Run polling for bot @Wdsdsdsdbot id=8955337292 - 'Kwazar_Cripto'
+2026-07-09 11:30:59,971 - WARNING - Received SIGTERM signal
+2026-07-09 11:30:59,972 - INFO - Polling stopped for bot @Wdsdsdsdbot id=8955337292 - 'Kwazar_Cripto'
+2026-07-09 11:30:59,973 - INFO - Polling stopped
+2026-07-09 11:31:00,224 - INFO - Фоновый воркер остановлен
+2026-07-09 11:47:29,064 - INFO - Инициализация базы данных...
+2026-07-09 11:47:29,066 - INFO - Запуск бота...
+2026-07-09 11:47:29,068 - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-07-09 11:47:29,069 - INFO - Added job "send_morning_newsletter" to job store "default"
+2026-07-09 11:47:29,069 - INFO - Scheduler started
+2026-07-09 11:47:29,069 - INFO - Планировщик задач запущен!
+2026-07-09 11:47:29,069 - INFO - Start polling
+2026-07-09 11:47:29,069 - INFO - Фоновый воркер проверки цен запущен
+2026-07-09 11:47:29,541 - INFO - Run polling for bot @Wdsdsdsdbot id=8955337292 - 'Kwazar_Cripto'
+2026-07-09 11:47:29,701 - INFO - Update id=389771458 is not handled. Duration 26 ms by bot id=8955337292
+2026-07-09 11:47:29,701 - ERROR - Cause exception while process update id=389771458 by bot id=8955337292
+TypeError: object of type 'generator' has no len()
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.12/site-packages/aiogram/dispatcher/dispatcher.py", line 320, in _process_update
+    response = await self.feed_update(bot, update, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/aiogram/dispatcher/dispatcher.py", line 164, in feed_update
+    response = await self.update.wrap_outer_middleware(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/aiogram/dispatcher/middlewares/error.py", line 27, in __call__
+    return await handler(event, data)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/aiogram/dispatcher/middlewares/user_context.py", line 58, in __call__
+    return await handler(event, data)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/aiogram/fsm/middleware.py", line 43, in __call__
+    return await handler(event, data)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/aiogram/dispatcher/event/telegram.py", line 126, in trigger
+    return await wrapped_inner(event, kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/aiogram/dispatcher/event/handler.py", line 71, in call
+    return await wrapped()
+           ^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/aiogram/dispatcher/dispatcher.py", line 283, in _listen_update
+    return await self.propagate_event(update_type=update_type, event=event, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/aiogram/dispatcher/router.py", line 165, in propagate_event
+    return await observer.wrap_outer_middleware(_wrapped, event=event, data=kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/aiogram/dispatcher/router.py", line 157, in _wrapped
+    return await self._propagate_event(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/aiogram/dispatcher/router.py", line 185, in _propagate_event
+    response = await observer.trigger(event, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/aiogram/dispatcher/event/telegram.py", line 126, in trigger
+    return await wrapped_inner(event, kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/aiogram/dispatcher/event/handler.py", line 71, in call
+    return await wrapped()
+           ^^^^^^^^^^^^^^^
+  File "/app/main.py", line 452, in admin_panel
+    f"👥 Всего пользователей: <b>{len(users)}</b>\n"
+                                  ^^^^^^^^^^
+TypeError: object of type 'generator' has no len()
+2026-07-09 11:47:30,156 - INFO - Update id=389771460 is handled. Duration 479 ms by bot id=8955337292
+2026-07-09 11:47:30,160 - INFO - Update id=389771459 is handled. Duration 484 ms by bot id=8955337292
+2026-07-09 11:47:30,178 - INFO - Update id=389771461 is handled. Duration 499 ms by bot id=8955337292
+2026-07-09 11:47:30,204 - INFO - Update id=389771462 is handled. Duration 524 ms by bot id=8955337292
+2026-07-09 11:51:51,044 - INFO - Update id=389771463 is not handled. Duration 5 ms by bot id=8955337292
+2026-07-09 11:51:51,044 - ERROR - Cause exception while process update id=389771463 by bot id=8955337292
+TypeError: object of type 'generator' has no len()
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.12/site-packages/aiogram/dispatcher/dispatcher.py", line 320, in _process_update
+    response = await self.feed_update(bot, update, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/aiogram/dispatcher/dispatcher.py", line 164, in feed_update
+    response = await self.update.wrap_outer_middleware(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/aiogram/dispatcher/middlewares/error.py", line 27, in __call__
+    return await handler(event, data)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/aiogram/dispatcher/middlewares/user_context.py", line 58, in __call__
+    return await handler(event, data)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/aiogram/fsm/middleware.py", line 43, in __call__
+    return await handler(event, data)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/aiogram/dispatcher/event/telegram.py", line 126, in trigger
+    return await wrapped_inner(event, kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/aiogram/dispatcher/event/handler.py", line 71, in call
+    return await wrapped()
+           ^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/aiogram/dispatcher/dispatcher.py", line 283, in _listen_update
+    return await self.propagate_event(update_type=update_type, event=event, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/aiogram/dispatcher/router.py", line 165, in propagate_event
+    return await observer.wrap_outer_middleware(_wrapped, event=event, data=kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/aiogram/dispatcher/router.py", line 157, in _wrapped
+    return await self._propagate_event(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/aiogram/dispatcher/router.py", line 185, in _propagate_event
+    response = await observer.trigger(event, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/aiogram/dispatcher/event/telegram.py", line 126, in trigger
+    return await wrapped_inner(event, kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/aiogram/dispatcher/event/handler.py", line 71, in call
+    return await wrapped()
+           ^^^^^^^^^^^^^^^
+  File "/app/main.py", line 452, in admin_panel
+    f"👥 Всего пользователей: <b>{len(users)}</b>\n"
+                                  ^^^^^^^^^^
+TypeError: object of type 'generator' has no len()
+2026-07-09 11:51:58,183 - INFO - Update id=389771464 is handled. Duration 146 ms by bot id=8955337292
+2026-07-09 11:52:17,901 - INFO - Update id=389771465 is not handled. Duration 7 ms by bot id=8955337292
+2026-07-09 11:52:17,902 - ERROR - Cause exception while process update id=389771465 by bot id=8955337292
+TypeError: object of type 'generator' has no len()
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.12/site-packages/aiogram/dispatcher/dispatcher.py", line 320, in _process_update
+    response = await self.feed_update(bot, update, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/aiogram/dispatcher/dispatcher.py", line 164, in feed_update
+    response = await self.update.wrap_outer_middleware(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/aiogram/dispatcher/middlewares/error.py", line 27, in __call__
+    return await handler(event, data)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/aiogram/dispatcher/middlewares/user_context.py", line 58, in __call__
+    return await handler(event, data)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/aiogram/fsm/middleware.py", line 43, in __call__
+    return await handler(event, data)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/aiogram/dispatcher/event/telegram.py", line 126, in trigger
+    return await wrapped_inner(event, kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/aiogram/dispatcher/event/handler.py", line 71, in call
+    return await wrapped()
+           ^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/aiogram/dispatcher/dispatcher.py", line 283, in _listen_update
+    return await self.propagate_event(update_type=update_type, event=event, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/aiogram/dispatcher/router.py", line 165, in propagate_event
+    return await observer.wrap_outer_middleware(_wrapped, event=event, data=kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/aiogram/dispatcher/router.py", line 157, in _wrapped
+    return await self._propagate_event(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/aiogram/dispatcher/router.py", line 185, in _propagate_event
+    response = await observer.trigger(event, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/aiogram/dispatcher/event/telegram.py", line 126, in trigger
+    return await wrapped_inner(event, kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/aiogram/dispatcher/event/handler.py", line 71, in call
+    return await wrapped()
+           ^^^^^^^^^^^^^^^
+  File "/app/main.py", line 452, in admin_panel
+    f"👥 Всего пользователей: <b>{len(users)}</b>\n"
+                                  ^^^^^^^^^^
+TypeError: object of type 'generator' has no len()
+2026-07-09 11:52:20,828 - INFO - Update id=389771466 is handled. Duration 131 ms by bot id=8955337292
+2026-07-09 11:55:02,342 - WARNING - Received SIGTERM signal
+2026-07-09 11:55:02,350 - INFO - Polling stopped for bot @Wdsdsdsdbot id=8955337292 - 'Kwazar_Cripto'
+2026-07-09 11:55:02,351 - INFO - Polling stopped
+2026-07-09 11:55:02,607 - INFO - Фоновый воркер остановлен
+2026-07-09 11:55:13,811 - INFO - Инициализация базы данных...
+2026-07-09 11:55:13,815 - INFO - Запуск бота...
+2026-07-09 11:55:13,820 - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-07-09 11:55:13,821 - INFO - Added job "send_morning_newsletter" to job store "default"
+2026-07-09 11:55:13,822 - INFO - Scheduler started
+2026-07-09 11:55:13,822 - INFO - Планировщик задач запущен!
+2026-07-09 11:55:13,822 - INFO - Start polling
+2026-07-09 11:55:13,822 - INFO - Фоновый воркер проверки цен запущен
+2026-07-09 11:55:14,745 - INFO - Run polling for bot @Wdsdsdsdbot id=8955337292 - 'Kwazar_Cripto'
+2026-07-09 11:55:15,373 - INFO - Update id=389771468 is handled. Duration 497 ms by bot id=8955337292
+2026-07-09 11:55:15,397 - INFO - Update id=389771467 is handled. Duration 522 ms by bot id=8955337292
+2026-07-09 11:55:29,080 - INFO - Update id=389771469 is handled. Duration 1065 ms by bot id=8955337292
+2026-07-09 11:59:13,063 - WARNING - Received SIGTERM signal
+2026-07-09 11:59:13,096 - INFO - Polling stopped for bot @Wdsdsdsdbot id=8955337292 - 'Kwazar_Cripto'
+2026-07-09 11:59:13,097 - INFO - Polling stopped
+2026-07-09 11:59:13,349 - INFO - Фоновый воркер остановлен
+2026-07-09 11:59:49,471 - INFO - Инициализация базы данных...
+2026-07-09 11:59:49,473 - INFO - Запуск бота...
+2026-07-09 11:59:49,477 - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-07-09 11:59:49,478 - INFO - Added job "send_morning_newsletter" to job store "default"
+2026-07-09 11:59:49,478 - INFO - Scheduler started
+2026-07-09 11:59:49,478 - INFO - Планировщик задач запущен!
+2026-07-09 11:59:49,478 - INFO - Start polling
+2026-07-09 11:59:49,478 - INFO - Фоновый воркер проверки цен запущен
+2026-07-09 12:00:52,345 - INFO - Polling stopped
+2026-07-09 12:00:52,596 - INFO - Фоновый воркер остановлен
+2026-07-09 12:00:58,767 - INFO - Инициализация базы данных...
+2026-07-09 12:00:58,768 - INFO - Запуск бота...
+2026-07-09 12:00:58,771 - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-07-09 12:00:58,772 - INFO - Added job "send_morning_newsletter" to job store "default"
+2026-07-09 12:00:58,772 - INFO - Scheduler started
+2026-07-09 12:00:58,772 - INFO - Планировщик задач запущен!
+2026-07-09 12:00:58,772 - INFO - Start polling
+2026-07-09 12:00:58,772 - INFO - Фоновый воркер проверки цен запущен
+2026-07-09 12:00:59,727 - INFO - Run polling for bot @Wdsdsdsdbot id=8955337292 - 'Kwazar_Cripto'
+2026-07-09 12:03:44,877 - WARNING - Received SIGTERM signal
+2026-07-09 12:03:44,880 - INFO - Polling stopped for bot @Wdsdsdsdbot id=8955337292 - 'Kwazar_Cripto'
+2026-07-09 12:03:44,880 - INFO - Polling stopped
+2026-07-09 12:03:45,134 - INFO - Фоновый воркер остановлен
+2026-07-09 12:04:21,642 - INFO - Инициализация базы данных...
+2026-07-09 12:04:21,647 - INFO - Запуск бота...
+2026-07-09 12:04:21,654 - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-07-09 12:04:21,655 - INFO - Added job "send_morning_newsletter" to job store "default"
+2026-07-09 12:04:21,655 - INFO - Scheduler started
+2026-07-09 12:04:21,655 - INFO - Планировщик задач запущен!
+2026-07-09 12:04:21,656 - INFO - Start polling
+2026-07-09 12:04:21,656 - INFO - Фоновый воркер проверки цен запущен
+2026-07-09 12:05:23,323 - INFO - Polling stopped
+2026-07-09 12:05:23,574 - INFO - Фоновый воркер остановлен
+2026-07-09 12:05:29,940 - INFO - Инициализация базы данных...
+2026-07-09 12:05:29,942 - INFO - Запуск бота...
+2026-07-09 12:05:29,947 - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-07-09 12:05:29,948 - INFO - Added job "send_morning_newsletter" to job store "default"
+2026-07-09 12:05:29,948 - INFO - Scheduler started
+2026-07-09 12:05:29,948 - INFO - Планировщик задач запущен!
+2026-07-09 12:05:29,948 - INFO - Start polling
+2026-07-09 12:05:29,948 - INFO - Фоновый воркер проверки цен запущен
+2026-07-09 12:05:30,408 - INFO - Run polling for bot @Wdsdsdsdbot id=8955337292 - 'Kwazar_Cripto'
+2026-07-09 12:05:45,305 - ERROR - Сетевая ошибка при запросе к Binance: TimeoutError()
+2026-07-09 12:12:31,264 - ERROR - Сетевая ошибка при запросе к Binance: TimeoutError()
+2026-07-09 12:20:05,396 - WARNING - Received SIGTERM signal
+2026-07-09 12:20:05,401 - INFO - Polling stopped for bot @Wdsdsdsdbot id=8955337292 - 'Kwazar_Cripto'
+2026-07-09 12:20:05,402 - INFO - Polling stopped
+2026-07-09 12:20:05,656 - INFO - Фоновый воркер остановлен
+2026-07-09 12:20:43,779 - INFO - Инициализация базы данных...
+2026-07-09 12:20:43,782 - INFO - Запуск бота...
+2026-07-09 12:20:43,786 - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-07-09 12:20:43,787 - INFO - Added job "send_morning_newsletter" to job store "default"
+2026-07-09 12:20:43,787 - INFO - Scheduler started
+2026-07-09 12:20:43,787 - INFO - Планировщик задач запущен!
+2026-07-09 12:20:43,787 - INFO - Start polling
+2026-07-09 12:20:43,787 - INFO - Фоновый воркер проверки цен запущен
+2026-07-09 12:21:44,196 - INFO - Polling stopped
+2026-07-09 12:21:44,448 - INFO - Фоновый воркер остановлен
+2026-07-09 12:21:48,890 - INFO - Инициализация базы данных...
+2026-07-09 12:21:48,892 - INFO - Запуск бота...
+2026-07-09 12:21:48,894 - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-07-09 12:21:48,895 - INFO - Added job "send_morning_newsletter" to job store "default"
+2026-07-09 12:21:48,895 - INFO - Scheduler started
+2026-07-09 12:21:48,895 - INFO - Планировщик задач запущен!
+2026-07-09 12:21:48,895 - INFO - Start polling
+2026-07-09 12:21:48,895 - INFO - Фоновый воркер проверки цен запущен
+2026-07-09 12:22:49,196 - INFO - Polling stopped
+2026-07-09 12:22:49,447 - INFO - Фоновый воркер остановлен
+2026-07-09 12:22:54,209 - INFO - Инициализация базы данных...
+2026-07-09 12:22:54,211 - INFO - Запуск бота...
+2026-07-09 12:22:54,213 - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-07-09 12:22:54,214 - INFO - Added job "send_morning_newsletter" to job store "default"
+2026-07-09 12:22:54,214 - INFO - Scheduler started
+2026-07-09 12:22:54,214 - INFO - Планировщик задач запущен!
+2026-07-09 12:22:54,214 - INFO - Start polling
+2026-07-09 12:22:54,214 - INFO - Фоновый воркер проверки цен запущен
+2026-07-09 12:23:55,191 - INFO - Polling stopped
+2026-07-09 12:23:55,444 - INFO - Фоновый воркер остановлен
+2026-07-09 12:24:00,263 - INFO - Инициализация базы данных...
+2026-07-09 12:24:00,264 - INFO - Запуск бота...
+2026-07-09 12:24:00,267 - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-07-09 12:24:00,267 - INFO - Added job "send_morning_newsletter" to job store "default"
+2026-07-09 12:24:00,268 - INFO - Scheduler started
+2026-07-09 12:24:00,268 - INFO - Планировщик задач запущен!
+2026-07-09 12:24:00,268 - INFO - Start polling
+2026-07-09 12:24:00,268 - INFO - Фоновый воркер проверки цен запущен
+2026-07-09 12:25:01,197 - INFO - Polling stopped
+2026-07-09 12:25:01,449 - INFO - Фоновый воркер остановлен
+2026-07-09 12:25:06,481 - INFO - Инициализация базы данных...
+2026-07-09 12:25:06,483 - INFO - Запуск бота...
+2026-07-09 12:25:06,486 - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-07-09 12:25:06,486 - INFO - Added job "send_morning_newsletter" to job store "default"
+2026-07-09 12:25:06,486 - INFO - Scheduler started
+2026-07-09 12:25:06,487 - INFO - Планировщик задач запущен!
+2026-07-09 12:25:06,487 - INFO - Start polling
+2026-07-09 12:25:06,487 - INFO - Фоновый воркер проверки цен запущен
+2026-07-09 12:26:07,197 - INFO - Polling stopped
+2026-07-09 12:26:07,449 - INFO - Фоновый воркер остановлен
+2026-07-09 12:26:12,903 - INFO - Инициализация базы данных...
+2026-07-09 12:26:12,905 - INFO - Запуск бота...
+2026-07-09 12:26:12,908 - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-07-09 12:26:12,908 - INFO - Added job "send_morning_newsletter" to job store "default"
+2026-07-09 12:26:12,908 - INFO - Scheduler started
+2026-07-09 12:26:12,908 - INFO - Планировщик задач запущен!
+2026-07-09 12:26:12,908 - INFO - Start polling
+2026-07-09 12:26:12,909 - INFO - Фоновый воркер проверки цен запущен
+2026-07-09 12:27:13,196 - INFO - Polling stopped
+2026-07-09 12:27:13,448 - INFO - Фоновый воркер остановлен
+2026-07-09 12:27:19,254 - INFO - Инициализация базы данных...
+2026-07-09 12:27:19,256 - INFO - Запуск бота...
+2026-07-09 12:27:19,259 - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-07-09 12:27:19,259 - INFO - Added job "send_morning_newsletter" to job store "default"
+2026-07-09 12:27:19,259 - INFO - Scheduler started
+2026-07-09 12:27:19,259 - INFO - Планировщик задач запущен!
+2026-07-09 12:27:19,259 - INFO - Start polling
+2026-07-09 12:27:19,260 - INFO - Фоновый воркер проверки цен запущен
+2026-07-09 12:27:19,706 - INFO - Run polling for bot @Wdsdsdsdbot id=8955337292 - 'Kwazar_Cripto'
+2026-07-09 12:35:59,691 - INFO - Update id=389771470 is handled. Duration 1691 ms by bot id=8955337292
+2026-07-09 15:34:01,768 - ERROR - Failed to fetch updates - TelegramNetworkError: HTTP Client says - Request timeout error
+2026-07-09 15:34:01,769 - WARNING - Sleep for 1.000000 seconds and try again... (tryings = 0, bot id = 8955337292)
+2026-07-09 15:34:13,240 - INFO - Connection established (tryings = 1, bot id = 8955337292)
+2026-07-09 15:38:30,255 - ERROR - Failed to fetch updates - TelegramNetworkError: HTTP Client says - ServerDisconnectedError: Server disconnected
+2026-07-09 15:38:30,263 - WARNING - Sleep for 1.000000 seconds and try again... (tryings = 0, bot id = 8955337292)
+2026-07-09 15:39:41,782 - ERROR - Failed to fetch updates - TelegramNetworkError: HTTP Client says - Request timeout error
+2026-07-09 15:39:41,782 - WARNING - Sleep for 1.407245 seconds and try again... (tryings = 1, bot id = 8955337292)
+2026-07-09 15:40:35,775 - ERROR - Сетевая ошибка при запросе к Binance: TimeoutError()
+2026-07-09 15:40:53,778 - ERROR - Failed to fetch updates - TelegramNetworkError: HTTP Client says - Request timeout error
+2026-07-09 15:40:53,778 - WARNING - Sleep for 1.899978 seconds and try again... (tryings = 2, bot id = 8955337292)
+2026-07-09 15:42:05,789 - ERROR - Failed to fetch updates - TelegramNetworkError: HTTP Client says - Request timeout error
+2026-07-09 15:42:05,789 - WARNING - Sleep for 2.448074 seconds and try again... (tryings = 3, bot id = 8955337292)
+2026-07-09 15:43:18,770 - ERROR - Failed to fetch updates - TelegramNetworkError: HTTP Client says - Request timeout error
+2026-07-09 15:43:18,770 - WARNING - Sleep for 3.096623 seconds and try again... (tryings = 4, bot id = 8955337292)
+2026-07-09 15:43:32,336 - INFO - Connection established (tryings = 5, bot id = 8955337292)
+2026-07-09 15:46:02,185 - INFO - Update id=389771471 is handled. Duration 511 ms by bot id=8955337292
+2026-07-09 15:46:08,493 - INFO - Update id=389771472 is handled. Duration 261 ms by bot id=8955337292
+2026-07-09 15:46:14,613 - INFO - Update id=389771473 is handled. Duration 285 ms by bot id=8955337292
+2026-07-09 15:46:28,822 - INFO - Update id=389771474 is handled. Duration 10947 ms by bot id=8955337292
+2026-07-09 15:46:38,505 - INFO - Update id=389771475 is handled. Duration 2327 ms by bot id=8955337292
+2026-07-09 15:46:44,366 - INFO - Update id=389771476 is handled. Duration 1883 ms by bot id=8955337292
+2026-07-09 15:56:57,844 - INFO - Update id=389771477 is handled. Duration 161 ms by bot id=8955337292
+2026-07-09 15:56:59,433 - INFO - Update id=389771478 is handled. Duration 285 ms by bot id=8955337292
+2026-07-09 15:57:01,147 - INFO - Update id=389771479 is handled. Duration 152 ms by bot id=8955337292
+2026-07-09 15:57:05,785 - INFO - Update id=389771480 is handled. Duration 2503 ms by bot id=8955337292
+2026-07-09 16:04:31,275 - ERROR - Сетевая ошибка при запросе к Binance: TimeoutError()
+2026-07-09 16:05:17,279 - ERROR - Сетевая ошибка при запросе к Binance: TimeoutError()
+2026-07-09 16:08:42,045 - INFO - Update id=389771481 is handled. Duration 175 ms by bot id=8955337292
+2026-07-09 16:08:48,449 - INFO - Update id=389771482 is handled. Duration 333 ms by bot id=8955337292
+2026-07-09 16:08:50,539 - INFO - Update id=389771483 is handled. Duration 145 ms by bot id=8955337292

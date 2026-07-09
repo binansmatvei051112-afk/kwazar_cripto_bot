@@ -1,0 +1,9 @@
+services:
+  crypto-bot:
+    build: .
+    container_name: my_crypto_bot
+    restart: always
+    volumes:
+      - .:/app
+    env_file:
+      - .env

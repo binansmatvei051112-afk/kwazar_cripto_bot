@@ -1,0 +1,8 @@
+aiogram
+aiosqlite
+python-dotenv
+pandas
+matplotlib
+aiohttp
+pandas-ta
+apscheduler

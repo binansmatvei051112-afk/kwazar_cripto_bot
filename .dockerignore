@@ -1,0 +1,9 @@
+venv/
+__pycache__/
+.git/
+.env
+alerts.db
+bot.log
+*.pyc
+*.pyo
+*.pyd
