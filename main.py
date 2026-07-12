@@ -673,7 +673,7 @@ async def process_tf(callback: types.CallbackQuery, state: FSMContext):
     coin = data['chosen_coin']
     tf = callback.data.split(":")[1]
     
-    await callback.message.edit_text("⏳ *Генерирую график... Пожалуйста, подождите.*")
+    await callback.message.edit_text("⏳ <b>Генерирую график... Пожалуйста, подождите.</b>")
     
     image_buffer = await get_chart_image(f"{coin}USDT", interval=tf)
     
@@ -719,9 +719,9 @@ async def button_my_alerts(message: types.Message):
                 direction = "⬆️" if a["vol_dir"] == "UP" else "⬇️"
                 vol = a["vol_target"]
                 if vol >= 1_000_000_000:
-                    vol_str = f"{vol / 1_000_000_000:.1f} млрд$"
+                    vol_str = f"{vol / 1_000_000_000:.2f} млрд$"
                 elif vol >= 1_000_000:
-                    vol_str = f"{vol / 1_000_000:.1f} млн$"
+                    vol_str = f"{vol / 1_000_000:.2f} млн$"
                 else:
                     vol_str = f"{vol:,.0f}$"
                 button_text = f"{direction} {coin} Объем → {vol_str} ❌"
