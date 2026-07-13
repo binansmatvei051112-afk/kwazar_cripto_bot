@@ -885,3 +885,5 @@ if __name__ == "__main__":
         asyncio.run(main())
     except KeyboardInterrupt:
         logger.info("Бот остановлен пользователем")
+    except Exception as e:
+        logger.critical("Критическая ошибка при запуске приложения!", exc_info=True)

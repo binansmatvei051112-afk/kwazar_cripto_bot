@@ -34,7 +34,7 @@ async def init_db():
                 -- Условие по ОБЪЕМУ
                 vol_check BOOLEAN DEFAULT 0,    -- 1 если проверяем объем, 0 если нет
                 vol_target REAL DEFAULT NULL,   -- Целевой объем (в $)
-                vol_dir TEXT DEFAULT NULL       -- 'UP' (выше) или 'DOWN' (ниже)
+                vol_dir TEXT DEFAULT NULL,       -- 'UP' (выше) или 'DOWN' (ниже)
                 vol_tf TEXT DEFAULT '1d'
             )
         """)
