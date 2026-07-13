@@ -335,7 +335,7 @@ async def start_alert_creation(message: types.Message, state: FSMContext):
     builder = InlineKeyboardBuilder()
     for coin in POPULAR_COINS:
         builder.add(InlineKeyboardButton(text=coin, callback_data=f"smart_coin:{coin}"))
-    builder.adjust(3)
+    builder.adjust(2)
     
     await message.answer(
         "🪙 <b>Шаг 1: Выбери монету</b> из списка\n"
@@ -421,8 +421,26 @@ async def complex_alert_stub(callback: types.CallbackQuery, state: FSMContext):
     # complex_operator -> complex_price_unit -> complex_price_val ->
     # -> complex_vol_tf (выбор периода объема, сразу после завершения условия по цене) ->
     # -> complex_vol_unit -> complex_vol_val -> сохранение через add_smart_alert(vol_tf=...)
-    await callback.answer("🔸 Сложные алерты реализуем в Спринте 4! Выбери Простой:", show_alert=True)
-
+    await callback.answer()
+    builder = InlineKeyboardBuilder()
+    builder.add(InlineKeyboardButton(text="ИЛИ (OR)", callback_data="complex_operator:or"))
+    builder.add(InlineKeyboardButton(text="И (AND)", callback_data="complex_operator:and"))
+    builder.adjust(2)
+    
+    await callback.message.edit_text(
+        "🔸 <i>Сложный выбор</i>\n"
+        "<b>Шаг 3: Какой оператор выберите?</b>",
+        reply_markup=builder.as_markup()
+    )
+    await state.set_state(SmartAlertForm.complex_operator)
+    
+@dp.callback_query(SmartAlertForm.complex_operator, F.data.startswith("complex_operator"))
+async def complex_operator_cmd(callback: types.CallbackQuery, state: FSMContext):
+    operator = callback.data.split(":")[1]
+    await state.update_data(operator=operator)
+    await callback.answer()
+    
+    
 # --- ВЫБОР МЕТРИКИ (Цена или Объем) ---
 
 @dp.callback_query(SmartAlertForm.simple_metric, F.data.startswith("s_metric:"))
