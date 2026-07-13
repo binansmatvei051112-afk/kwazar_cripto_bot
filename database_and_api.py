@@ -242,7 +242,7 @@ async def add_smart_alert(
 
 async def fetch_coin_volume_tf(symbol: str, window_size: str = "1d") -> float:
     
-    url = f"https://api.binance.com/api/v3/ticker?symbol={symbol}&windowSize={window_size}"
+    url = f"https://api1.binance.com/api/v3/ticker?symbol={symbol}&windowSize={window_size}"
     try:
         async with aiohttp.ClientSession(trust_env=True) as session:
             async with session.get(url, timeout=10) as response:
@@ -255,7 +255,7 @@ async def fetch_coin_volume_tf(symbol: str, window_size: str = "1d") -> float:
 
 async def fetch_all_volumes_tf(window_size: str = "1d", quote_asset: str = "USDT") -> dict:
     
-    url = f"https://api.binance.com/api/v3/ticker?windowSize={window_size}"
+    url = f"https://api1.binance.com/api/v3/ticker?windowSize={window_size}"
     try:
         async with aiohttp.ClientSession(trust_env=True) as session:
             async with session.get(url, timeout=15) as response:
