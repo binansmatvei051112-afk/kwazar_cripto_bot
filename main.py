@@ -297,28 +297,36 @@ async def menu_prices(message: types.Message):
         "👉 <code>/price НАЗВАНИЕ</code>"
     )
     
-    # Редактируем сообщение, обязательно указав parse_mode
-    await msg.edit_text(text, parse_mode="HTML")
+    await msg.edit_text(text)
 
 @dp.message(Command("price"))
-async def cmd_price(message: types.Message):
-    args = message.text.split()
-    if len(args) < 2:
-        return await message.answer("❌ Использование: <code>/price [тикер]</code>\nПример: <code>/price ETH</code>")
-        
-    coin = args[1].upper()
-    if not coin.endswith("USDT"):
-        coin += "USDT"
-        
-    prices = await get_cached_prices()
-    current_price = prices.get(coin)
+async def cmd_price(message:types.Message):
+    args = message.text.split(" ")
     
-    if current_price is None:
-        return await message.answer(f"❌ Монета <code>{coin}</code> не найдена на Binance.")
+    if len(args) < 2:
+        return await message.answer("<b>Напишите правильную форму команды:</b><code>/price НАЗВАНИЕ МОНЕТЫ</code>")
+    
+    raw_coin = args[1]
+    
+    if raw_coin.endswith("USDT"):
+        raw_coin = raw_coin[:-4]
+    
+    raw_coins = [ raw_coin,  raw_coin.lower(),  raw_coin.upper()]
+    
+    coins = [coin + "USDT" for coin in raw_coins]
         
-    await message.answer(f"📈 Текущая цена <b>{coin}</b>: <code>{current_price}</code> $")
-
-
+    prise = await get_cached_prices()
+    
+    for coin in coins:
+        current_prise = prise.get(coin, None)
+        if current_prise != None:
+            return await message.answer(f"<i>📊 Монета {coin} стоит </i><code>{current_prise} $</code>\n")
+    
+    return await message.answer(
+        f"<b>❌ Монета {raw_coin} не найдена</b>\n"
+        f"───────────────────\n"
+        f"Проверьте правильность написания тикера или попробуйте позже.",)
+    
 @dp.message(F.text == "Создать алерт")
 async def start_alert_creation(message: types.Message, state: FSMContext):
     await state.clear()
