@@ -35,6 +35,7 @@ async def init_db():
                 vol_check BOOLEAN DEFAULT 0,    -- 1 если проверяем объем, 0 если нет
                 vol_target REAL DEFAULT NULL,   -- Целевой объем (в $)
                 vol_dir TEXT DEFAULT NULL       -- 'UP' (выше) или 'DOWN' (ниже)
+                vol_tf TEXT DEFAULT '1d'
             )
         """)
         await db.execute("""
@@ -236,7 +237,8 @@ async def add_smart_alert(
     alert_type: str,  # 'simple' или 'complex'
     operator: str = None,
     price_check: int = 0, price_target: float = None, price_dir: str = None,
-    vol_check: int = 0, vol_target: float = None, vol_dir: str = None
+    vol_check: int = 0, vol_target: float = None, vol_dir: str = None,
+    vol_tf: str = "1d"
 ) -> bool:
     
     try:
@@ -245,14 +247,46 @@ async def add_smart_alert(
                 INSERT INTO smart_alerts (
                     user_id, coin_symbol, alert_type, operator,
                     price_check, price_target, price_dir,
-                    vol_check, vol_target, vol_dir
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            """, (user_id, coin, alert_type, operator, price_check, price_target, price_dir, vol_check, vol_target, vol_dir))
+                    vol_check, vol_target, vol_dir, vol_tf
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (user_id, coin, alert_type, operator, price_check, price_target, price_dir, vol_check, vol_target, vol_dir, vol_tf))
             await db.commit()
             return True
     except Exception as e:
         logger.error(f"Ошибка сохранения умного алерта: {e}")
         return False
+
+async def fetch_coin_volume_tf(symbol: str, window_size: str = "1d") -> float:
+    
+    url = f"https://api.binance.com/api/v3/ticker?symbol={symbol}&windowSize={window_size}"
+    try:
+        async with aiohttp.ClientSession(trust_env=True) as session:
+            async with session.get(url, timeout=10) as response:
+                if response.status == 200:
+                    data = await response.json()
+                    return float(data.get('quoteVolume', 0.0))
+    except Exception as e:
+        logger.error(f"Ошибка получения объема за {window_size} для {symbol}: {e}")
+    return 0.0
+
+async def fetch_all_volumes_tf(window_size: str = "1d", quote_asset: str = "USDT") -> dict:
+    
+    url = f"https://api.binance.com/api/v3/ticker?windowSize={window_size}"
+    try:
+        async with aiohttp.ClientSession(trust_env=True) as session:
+            async with session.get(url, timeout=15) as response:
+                if response.status == 200:
+                    data = await response.json()
+                    return {
+                        item['symbol']: {
+                            'quote_volume': float(item['quoteVolume']),
+                            'price_change_percent': float(item.get('priceChangePercent', 0.0))
+                        }
+                        for item in data if item['symbol'].endswith(quote_asset)
+                    }
+    except Exception as e:
+        logger.error(f"Ошибка получения всех объемов за {window_size}: {e}")
+    return {}
 
 async def main():
     await init_db()
