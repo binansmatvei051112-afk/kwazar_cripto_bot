@@ -2,24 +2,24 @@ import asyncio
 import logging
 from logging.handlers import RotatingFileHandler
 import os
-from apscheduler.schedulers.asyncio import AsyncIOScheduler # type: ignore
-from aiogram import Bot, Dispatcher, types, F # type: ignore
-from aiogram.filters import Command, BaseFilter # type: ignore
-from aiogram.client.default import DefaultBotProperties # type: ignore
-from aiogram.enums import ParseMode # type: ignore 
-from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardMarkup, InlineKeyboardButton # type: ignore
-from aiogram.utils.keyboard import InlineKeyboardBuilder # type: ignore
-from aiogram.fsm.context import FSMContext # type: ignore
-from aiogram.fsm.state import State, StatesGroup # type: ignore
-import aiosqlite # type: ignore
-from aiogram.types import BufferedInputFile # type: ignore
+from apscheduler.schedulers.asyncio import AsyncIOScheduler 
+from aiogram import Bot, Dispatcher, types, F 
+from aiogram.filters import Command, BaseFilter 
+from aiogram.client.default import DefaultBotProperties
+from aiogram.enums import ParseMode  
+from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardMarkup, InlineKeyboardButton 
+from aiogram.utils.keyboard import InlineKeyboardBuilder 
+from aiogram.fsm.context import FSMContext 
+from aiogram.fsm.state import State, StatesGroup 
+import aiosqlite 
+from aiogram.types import BufferedInputFile 
 from database_and_api import (
     init_db, fetch_binance_prices, DB_NAME, 
     fetch_binance_24h_stats, get_chart_image, get_all_users, add_users,
     update_crypto_cache, get_cached_prices, get_cached_stats, add_smart_alert,
-    fetch_coin_volume_tf, fetch_all_volumes_tf
+    fetch_all_volumes_tf, get_symbol_volume
 )
-from dotenv import load_dotenv # type: ignore
+from dotenv import load_dotenv 
 
 load_dotenv()
 BOT_TOKEN = os.getenv("BOT_TOKEN")
@@ -43,6 +43,9 @@ bot = Bot(token=BOT_TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.HTM
 dp = Dispatcher()
 
 POPULAR_COINS = ["BTC", "ETH", "BNB", "SOL", "XRP", "DOGE", "TON", "ADA", "AVAX", "LINK"]
+ 
+VOL_TF_NAMES = {"1h": "1 час", "4h": "4 часа", "1d": "24 часа", "7d": "7 дней"}
+VOL_TF_SHORT = {"1h": "1ч", "4h": "4ч", "1d": "24ч", "7d": "7д"}
 
 main_kb = ReplyKeyboardMarkup(
     keyboard=[
@@ -64,20 +67,21 @@ class SmartAlertForm(StatesGroup):
     choosing_complexity = State()   # Простой или Сложный
     
     # --- ВЕТКА: ПРОСТОЙ АЛЕРТ ---
-    simple_metric = State()
-    choosing_vol_tf = State()         # Что меряем: Цена или Объем
+    simple_metric = State()         # Что меряем: Цена или Объем
+    simple_vol_tf = State()         # За какой период смотрим объем (только если metric == 'vol')
     simple_unit = State()           # В чем меряем: Деньги или Проценты
     simple_value_input = State()   
     simple_percent_menu = State()   # Интерактивное меню (если выбрали "Проценты")
     
-    # --- ВЕТКА: СЛОЖНЫЙ АЛЕРТ ---
+    # --- ВЕТКА: СЛОЖНЫЙ АЛЕРТ (Спринт 4, пока не реализовано) ---
     complex_operator = State()      # Оператор: И или ИЛИ
     
     # Настройка 1-го условия (Цена)
     complex_price_unit = State()    # Деньги или Проценты для цены
-    complex_price_val = State()     # Ввод/выбор значения цены\
-    # Настройка 2-го условия (Объем)
-    choosing_vol_tf = State()
+    complex_price_val = State()     # Ввод/выбор значения цены
+    # Настройка 2-го условия (Объем) — период объема выбираем сразу после
+    # завершения настройки цены, перед вводом единицы измерения объема
+    complex_vol_tf = State()
     complex_vol_unit = State()      # Деньги или Проценты для объема
     complex_vol_val = State()
 
@@ -117,7 +121,7 @@ async def check_alerts_loop():
         while True:
             try:
                 prices = await get_cached_prices()
-                stats = await get_cached_stats()
+                stats_1d = await get_cached_stats()
                 if not prices:
                     await asyncio.sleep(30)
                     continue
@@ -126,12 +130,25 @@ async def check_alerts_loop():
                     db.row_factory = aiosqlite.Row
                     async with db.execute("SELECT * FROM smart_alerts") as cursor:
                         alerts = await cursor.fetchall()
-                        
+
+                        # Собираем, по каким монетам нужен объем за период, отличный от 1d,
+                        # чтобы сделать один батч-запрос на таймфрейм, а не по одному на алерт
+                        extra_tf_symbols = {}  # {'1h': {'BTCUSDT', ...}, '4h': {...}, '7d': {...}}
+                        for alert in alerts:
+                            vol_tf = alert["vol_tf"] or "1d"
+                            if alert["vol_check"] and vol_tf != "1d":
+                                extra_tf_symbols.setdefault(vol_tf, set()).add(alert["coin_symbol"])
+
+                        extra_stats = {}  # {'1h': {symbol: {...}}, ...}
+                        for tf, symbols in extra_tf_symbols.items():
+                            extra_stats[tf] = await fetch_all_volumes_tf(window_size=tf, symbols=list(symbols))
+
                         for alert in alerts:
                             symbol = alert["coin_symbol"]
                             a_type = alert["alert_type"]
                             user_id = alert["user_id"]
                             alert_id = alert["id"]
+                            vol_tf = alert["vol_tf"] or "1d"
                             
                             triggered = False
                             reason_text = ""
@@ -149,15 +166,19 @@ async def check_alerts_loop():
                                             reason_text = f"📉 Цена упала до <code>{curr_price} $</code> (Цель: {target_price} $)"
                                             
                                 elif alert["vol_check"]:
-                                    curr_vol = stats.get(symbol, {}).get("quote_volume", 0)
+                                    if vol_tf == "1d":
+                                        curr_vol = stats_1d.get(symbol, {}).get("quote_volume", 0)
+                                    else:
+                                        curr_vol = extra_stats.get(vol_tf, {}).get(symbol, {}).get("quote_volume", 0)
                                     target_vol = alert["vol_target"]
+                                    tf_name = VOL_TF_NAMES.get(vol_tf, "24 часа")
                                     if curr_vol > 0:
                                         if alert["vol_dir"] == "UP" and curr_vol >= target_vol:
                                             triggered = True
-                                            reason_text = f"📊 Объем 24ч превысил <code>{curr_vol / 1_000_000:.2f} млн $</code>!"
+                                            reason_text = f"📊 Объем за {tf_name} превысил <code>{curr_vol / 1_000_000:.2f} млн $</code>!"
                                         elif alert["vol_dir"] == "DOWN" and curr_vol <= target_vol:
                                             triggered = True
-                                            reason_text = f"📉 Объем 24ч упал ниже <code>{curr_vol / 1_000_000:.2f} млн $</code>!"
+                                            reason_text = f"📉 Объем за {tf_name} упал ниже <code>{curr_vol / 1_000_000:.2f} млн $</code>!"
                             
                             # Сложные алерты (a_type == 'complex') подключим в Спринте 4!
                             
@@ -239,28 +260,45 @@ async def cmd_start(message: types.Message):
     )
 
 @dp.message(F.text == "🚫 Отмена")
-async def cancel_handler(message: types.Message, state: FSMContext):
+async def cancel_handlane(message: types.Message, state: FSMContext):
     await state.clear()
-    await message.answer("Действие отменено.", reply_markup=main_kb)
+    await message.answer("🚫 Действие отменено", reply_markup=main_kb)
 
 @dp.message(F.text == "🔍 Курсы валют")
 async def menu_prices(message: types.Message):
-    msg = await message.answer("⏳ Запрашиваю цены с Binance...")
     
-    prices = await get_cached_prices()
-    if not prices:
-        return await msg.edit_text("❌ Не удалось получить цены. Попробуйте позже.")
-        
-    text = "📊 <b>Топ-10 популярных монет:</b>\n\n"
+    msg = await message.answer("⏳ <i>Запрашиваю актуальные цены из базы данных...</i>")
+    
+    prise = await get_cached_prices()
+    
+    text = (
+        "<b>📊 ТОП-10 популярных криптовалют</b>\n"
+        "───────────────────\n"
+    )
+    
+    
     for coin in POPULAR_COINS:
-        symbol = f"{coin}USDT"
-        price = prices.get(symbol, "Н/Д")
-        if price != "Н/Д":
-            text += f"🔹 <b>{coin}</b>: <code>{price}</code> $\n"
+        current_coin = f"{coin}USDT"
+        current_prise = prise.get(current_coin, "Н/Д")
+        
+        if current_prise != "Н/Д":
             
-    text += "\n<i>Узнать цену любой другой монеты:</i>\n<code>/price [тикер]</code> (например, /price PEPE)"
+            try:
+                formatted_price = f"{float(current_prise):,}".replace(",", " ")
+            except ValueError:
+                formatted_price = current_prise
+                
+            text += f"🔹 <b>{coin:<5}</b> <code>$ {formatted_price}</code>\n"
+            
+    text += (
+        "───────────────────\n"
+        "💡 <i>Не нашли нужную монету?</i>\n"
+        "Используйте команду:\n"
+        "👉 <code>/price НАЗВАНИЕ</code>"
+    )
     
-    await msg.edit_text(text)
+    # Редактируем сообщение, обязательно указав parse_mode
+    await msg.edit_text(text, parse_mode="HTML")
 
 @dp.message(Command("price"))
 async def cmd_price(message: types.Message):
@@ -371,6 +409,10 @@ async def simple_alert_chosen(callback: types.CallbackQuery, state: FSMContext):
 
 @dp.callback_query(SmartAlertForm.choosing_complexity, F.data == "complexity:complex")
 async def complex_alert_stub(callback: types.CallbackQuery, state: FSMContext):
+    # TODO (Спринт 4): порядок шагов сложного алерта:
+    # complex_operator -> complex_price_unit -> complex_price_val ->
+    # -> complex_vol_tf (выбор периода объема, сразу после завершения условия по цене) ->
+    # -> complex_vol_unit -> complex_vol_val -> сохранение через add_smart_alert(vol_tf=...)
     await callback.answer("🔸 Сложные алерты реализуем в Спринте 4! Выбери Простой:", show_alert=True)
 
 # --- ВЫБОР МЕТРИКИ (Цена или Объем) ---
@@ -380,14 +422,41 @@ async def simple_metric_chosen(callback: types.CallbackQuery, state: FSMContext)
     metric = callback.data.split(":")[1] # 'price' или 'vol'
     await state.update_data(metric=metric)
     await callback.answer()
-    
-    metric_name = "Цене" if metric == 'price' else "Объему торгов"
-    
+
+    if metric == "vol":
+        # Для объема сначала уточняем, за какой период его сравнивать
+        builder = InlineKeyboardBuilder()
+        for tf_key in ["1h", "4h", "1d", "7d"]:
+            builder.add(InlineKeyboardButton(text=f"⏱ {VOL_TF_NAMES[tf_key]}", callback_data=f"s_voltf:{tf_key}"))
+        builder.adjust(2, 2)
+
+        await callback.message.edit_text(
+            "📊 Отслеживание по: <b>Объему торгов</b>\n\n"
+            "<b>Шаг 3.5: За какой период сравнивать объем?</b>\n"
+            "<i>Например, «1 час» — алерт сработает, когда объем торгов именно за последний час "
+            "пересечет заданную границу.</i>",
+            reply_markup=builder.as_markup()
+        )
+        await state.set_state(SmartAlertForm.simple_vol_tf)
+        return
+
+    await ask_simple_unit(callback, state)
+
+async def ask_simple_unit(callback: types.CallbackQuery, state: FSMContext):
+    """Общий шаг 4: спрашиваем, в чем задавать цель (деньги или проценты)."""
+    data = await state.get_data()
+    metric = data['metric']
+
+    if metric == "price":
+        metric_name = "Цене"
+    else:
+        metric_name = f"Объему торгов ({VOL_TF_NAMES[data.get('vol_tf', '1d')]})"
+
     builder = InlineKeyboardBuilder()
     builder.add(InlineKeyboardButton(text="💵 В деньгах ($)", callback_data="s_unit:money"))
     builder.add(InlineKeyboardButton(text="📈 В процентах (%)", callback_data="s_unit:percent"))
     builder.adjust(2)
-    
+
     await callback.message.edit_text(
         f"🔹 Отслеживание по: <b>{metric_name}</b>\n\n"
         "<b>Шаг 4: В чем задавать цель?</b>\n"
@@ -396,6 +465,34 @@ async def simple_metric_chosen(callback: types.CallbackQuery, state: FSMContext)
         reply_markup=builder.as_markup()
     )
     await state.set_state(SmartAlertForm.simple_unit)
+
+@dp.callback_query(SmartAlertForm.simple_vol_tf, F.data.startswith("s_voltf:"))
+async def simple_vol_tf_chosen(callback: types.CallbackQuery, state: FSMContext):
+    tf = callback.data.split(":")[1]
+    await callback.answer()
+
+    data = await state.get_data()
+    coin = data['coin']
+
+    # Базовый объем в кэше считался только за 24ч — для остальных периодов
+    # запрашиваем актуальное значение у Binance именно для этого таймфрейма
+    if tf == "1d":
+        actual_vol = data.get('base_vol')
+    else:
+        await callback.message.edit_text(f"⏳ Уточняю объем за {VOL_TF_NAMES[tf]}...")
+        actual_vol = await get_symbol_volume(coin, window_size=tf)
+
+    if actual_vol is None:
+        return await callback.message.edit_text(
+            "❌ Не удалось получить объем за этот период у Binance. Попробуй другой период "
+            "или повтори позже.",
+            reply_markup=InlineKeyboardBuilder()
+                .add(*[InlineKeyboardButton(text=f"⏱ {VOL_TF_NAMES[k]}", callback_data=f"s_voltf:{k}") for k in ["1h", "4h", "1d", "7d"]])
+                .adjust(2, 2).as_markup()
+        )
+
+    await state.update_data(vol_tf=tf, base_vol=actual_vol)
+    await ask_simple_unit(callback, state)
 
 # --- ВЫБОР ЕДИНИЦЫ ИЗМЕРЕНИЯ ---
 
@@ -412,7 +509,8 @@ async def simple_unit_money_chosen(callback: types.CallbackQuery, state: FSMCont
     else:
         base_val = f"{data['base_vol'] / 1_000_000:.2f} млн $"
         ex_val = f"{int(data['base_vol'] * 1.2)}"
-        name = "целевой объем 24ч (в долларах)"
+        tf_name = VOL_TF_NAMES.get(data.get('vol_tf', '1d'), '24 часа')
+        name = f"целевой объем за {tf_name} (в долларах)"
         
     await callback.message.edit_text(
         f"💵 <b>Ввод точного значения</b>\n\n"
@@ -439,7 +537,8 @@ def get_percent_menu_text_and_kb(data: dict):
         target_val = base_val * (1 + current_pct / 100)
         base_str = f"{base_val / 1_000_000:,.2f} млн $"
         target_str = f"{target_val / 1_000_000:,.2f} млн $"
-        name = "Объем 24ч"
+        tf_name = VOL_TF_NAMES.get(data.get('vol_tf', '1d'), '24 часа')
+        name = f"Объем ({tf_name})"
         
     sign = "+" if current_pct > 0 else ""
     
@@ -554,13 +653,14 @@ async def percent_confirm_handler(callback: types.CallbackQuery, state: FSMConte
         dir_text = "📈 выросла на" if direction == "UP" else "📉 упала на"
         val_str = f"<b>{abs(current_pct)}%</b> (до <code>{target_val:,.2f} $</code>)"
     else:
+        vol_tf = data.get('vol_tf', '1d')
         target_val = data['base_vol'] * (1 + current_pct / 100)
         direction = "UP" if current_pct > 0 else "DOWN"
         success = await add_smart_alert(
             user_id=callback.from_user.id, coin=coin, alert_type='simple',
-            vol_check=1, vol_target=target_val, vol_dir=direction
+            vol_check=1, vol_target=target_val, vol_dir=direction, vol_tf=vol_tf
         )
-        dir_text = "📈 объем вырастет на" if direction == "UP" else "📉 объем упадет на"
+        dir_text = f"📈 объем за {VOL_TF_NAMES[vol_tf]} вырастет на" if direction == "UP" else f"📉 объем за {VOL_TF_NAMES[vol_tf]} упадет на"
         val_str = f"<b>{abs(current_pct)}%</b> (до <code>{target_val / 1_000_000:,.2f} млн $</code>)"
         
     await state.clear()
@@ -621,12 +721,13 @@ async def simple_value_received(message: types.Message, state: FSMContext):
         dir_text = "📈 выросла до" if direction == "UP" else "📉 упала до"
         val_str = f"<code>{target_val:,.2f} $</code> ({'+' if current_pct>0 else ''}{current_pct:.1f}%)"
     else:
+        vol_tf = data.get('vol_tf', '1d')
         direction = "UP" if target_val > data['base_vol'] else "DOWN"
         success = await add_smart_alert(
             user_id=message.chat.id, coin=coin, alert_type='simple',
-            vol_check=1, vol_target=target_val, vol_dir=direction
+            vol_check=1, vol_target=target_val, vol_dir=direction, vol_tf=vol_tf
         )
-        dir_text = "📈 объем превысит" if direction == "UP" else "📉 объем упадет ниже"
+        dir_text = f"📈 объем за {VOL_TF_NAMES[vol_tf]} превысит" if direction == "UP" else f"📉 объем за {VOL_TF_NAMES[vol_tf]} упадет ниже"
         val_str = f"<code>{target_val:,.0f} $</code> ({'+' if current_pct>0 else ''}{current_pct:.1f}%)"
         
     await state.clear()
@@ -695,7 +796,7 @@ async def button_my_alerts(message: types.Message):
         async with db.execute(
             """SELECT id, coin_symbol, alert_type, operator, 
                       price_check, price_target, price_dir, 
-                      vol_check, vol_target, vol_dir 
+                      vol_check, vol_target, vol_dir, vol_tf
                FROM smart_alerts WHERE user_id = ?""",
             (message.chat.id,)
         ) as cursor:
@@ -726,7 +827,8 @@ async def button_my_alerts(message: types.Message):
                     vol_str = f"{vol / 1_000_000:.2f} млн$"
                 else:
                     vol_str = f"{vol:,.0f}$"
-                button_text = f"{direction} {coin} Объем → {vol_str} ❌"
+                tf_short = VOL_TF_SHORT.get(a["vol_tf"] or "1d", "24ч")
+                button_text = f"{direction} {coin} Объем ({tf_short}) → {vol_str} ❌"
             else:
                 button_text = f"❓ {coin} (простой алерт) ❌"
         else:
@@ -836,7 +938,7 @@ async def admin_panel(message: types.Message):
     users = list(await get_all_users())
     
     async with aiosqlite.connect(DB_NAME) as db:
-        async with db.execute("SELECT COUNT(*) FROM price_alerts") as cursor:
+        async with db.execute("SELECT COUNT(*) FROM smart_alerts") as cursor:
             alert_count = (await cursor.fetchone())[0]
     
     text = (

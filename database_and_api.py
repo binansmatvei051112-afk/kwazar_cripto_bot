@@ -1,14 +1,15 @@
 import asyncio
-import aiohttp # type: ignore
-import aiosqlite # type: ignore
+import json
+import aiohttp 
+import aiosqlite 
 import logging
 import matplotlib
 matplotlib.use('Agg')
-import matplotlib.pyplot as plt # type: ignore
-import pandas as pd # type: ignore
+import matplotlib.pyplot as plt 
+import pandas as pd 
 import io
-import pandas_ta as ta # type: ignore
-import matplotlib.dates as mdates # type: ignore
+import pandas_ta as ta 
+import matplotlib.dates as mdates 
 
 DB_NAME = "alerts.db"
 
@@ -240,25 +241,36 @@ async def add_smart_alert(
         logger.error(f"Ошибка сохранения умного алерта: {e}")
         return False
 
-async def fetch_coin_volume_tf(symbol: str, window_size: str = "1d") -> float:
-    
-    url = f"https://api1.binance.com/api/v3/ticker?symbol={symbol}&windowSize={window_size}"
-    try:
-        async with aiohttp.ClientSession(trust_env=True) as session:
-            async with session.get(url, timeout=10) as response:
-                if response.status == 200:
-                    data = await response.json()
-                    return float(data.get('quoteVolume', 0.0))
-    except Exception as e:
-        logger.error(f"Ошибка получения объема за {window_size} для {symbol}: {e}")
-    return 0.0
+DEFAULT_TRACKED_SYMBOLS = [
+    f"{coin}USDT" for coin in
+    ["BTC", "ETH", "BNB", "SOL", "XRP", "DOGE", "TON", "ADA", "AVAX", "LINK"]
+]
 
-async def fetch_all_volumes_tf(window_size: str = "1d", quote_asset: str = "USDT") -> dict:
-    
-    url = f"https://api1.binance.com/api/v3/ticker?windowSize={window_size}"
+async def fetch_all_volumes_tf(window_size: str = "1d", quote_asset: str = "USDT", symbols: list = None) -> dict:
+    """
+    Получает объемы торгов и изменение цены за заданный период.
+
+    Для '1d' используем стандартный эндпоинт /ticker/24hr — он отдает данные
+    сразу по всем монетам без ограничений.
+
+    Для остальных окон (1h, 4h, 7d и т.д.) Binance требует явно передать
+    'symbol' или 'symbols' — запрос windowSize без указания монет вернет
+    ошибку 400 (code -1128). Поэтому запрашиваем ограниченный список
+    (по умолчанию — DEFAULT_TRACKED_SYMBOLS) через параметр 'symbols'.
+    """
+    if window_size == "1d":
+        url = "https://api1.binance.com/api/v3/ticker/24hr"
+        params = {}
+    else:
+        symbols_list = symbols or DEFAULT_TRACKED_SYMBOLS
+        # Binance ждет symbols в виде JSON-массива строк, например ["BTCUSDT","ETHUSDT"]
+        symbols_json = json.dumps(symbols_list, separators=(",", ":"))
+        url = "https://api1.binance.com/api/v3/ticker"
+        params = {"windowSize": window_size, "symbols": symbols_json}
+
     try:
         async with aiohttp.ClientSession(trust_env=True) as session:
-            async with session.get(url, timeout=15) as response:
+            async with session.get(url, params=params, timeout=15) as response:
                 if response.status == 200:
                     data = await response.json()
                     return {
@@ -268,9 +280,27 @@ async def fetch_all_volumes_tf(window_size: str = "1d", quote_asset: str = "USDT
                         }
                         for item in data if item['symbol'].endswith(quote_asset)
                     }
+                else:
+                    error_text = await response.text()
+                    logger.error(f"❌ [fetch_all_volumes_tf] Binance ответил кодом {response.status} для окна {window_size}: {error_text}")
     except Exception as e:
-        logger.error(f"Ошибка получения всех объемов за {window_size}: {e}")
+        logger.error(f"❌ [fetch_all_volumes_tf] Сетевая ошибка при получении объемов за {window_size}: {repr(e)}")
     return {}
+
+async def get_symbol_volume(symbol: str, window_size: str = "1d") -> float | None:
+    """
+    Объем торгов (в quote-валюте, обычно USDT) для одной конкретной монеты
+    за нужный период. Для '1d' берет данные из локального кэша (без лишнего
+    похода в Binance), для остальных периодов — живой запрос по одному символу.
+    """
+    if window_size == "1d":
+        cached = await get_cached_stats()
+        data = cached.get(symbol)
+    else:
+        stats = await fetch_all_volumes_tf(window_size=window_size, symbols=[symbol])
+        data = stats.get(symbol)
+
+    return data['quote_volume'] if data else None
 
 async def main():
     await init_db()
