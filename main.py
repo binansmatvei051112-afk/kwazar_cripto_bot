@@ -14,9 +14,10 @@ from aiogram.fsm.state import State, StatesGroup # type: ignore
 import aiosqlite # type: ignore
 from aiogram.types import BufferedInputFile # type: ignore
 from database_and_api import (
-    init_db, fetch_binance_prices, add_alert, DB_NAME, 
+    init_db, fetch_binance_prices, DB_NAME, 
     fetch_binance_24h_stats, get_chart_image, get_all_users, add_users,
-    update_crypto_cache, get_cached_prices, get_cached_stats, add_smart_alert
+    update_crypto_cache, get_cached_prices, get_cached_stats, add_smart_alert,
+    fetch_coin_volume_tf, fetch_all_volumes_tf
 )
 from dotenv import load_dotenv # type: ignore
 

@@ -53,22 +53,6 @@ async def init_db():
             )
         """)
         await db.commit()
-
-async def add_alert(user_id: int, coin: str, price: float, alert_type: str):
-    async with aiosqlite.connect(DB_NAME) as db:
-        cursor = await db.execute(
-            "SELECT id FROM price_alerts WHERE user_id=? AND coin_symbol=? AND target_price=? AND alert_type=?",
-            (user_id, coin.upper(), price, alert_type)
-        )
-        if await cursor.fetchone():
-            return False
-        
-        await db.execute(
-            "INSERT INTO price_alerts (user_id, coin_symbol, target_price, alert_type) VALUES (?, ?, ?, ?)",
-            (user_id, coin.upper(), price, alert_type)
-        )
-        await db.commit()
-        return True
     
 async def add_users(user_id:int):
     async with aiosqlite.connect(DB_NAME) as db:
