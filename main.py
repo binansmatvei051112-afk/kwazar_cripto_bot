@@ -441,9 +441,18 @@ async def complex_operator_cmd(callback: types.CallbackQuery, state: FSMContext)
     await callback.answer()
     
     builder = InlineKeyboardBuilder()
-    builder.add(InlineKeyboardButton())
+    builder.add(InlineKeyboardButton(text="💵 В деньгах ($)", callback_data="complex_unit:money"))
+    builder.add(InlineKeyboardButton(text="📈 В процентах (%)", callback_data="complex_unit:percent"))
+    builder.adjust(2)
         
-    
+    await callback.message.edit_text(
+        f"📊 Отслеживание с оператором <b>{operator}</b>\n\n"
+        "<b>Шаг 4: В чем будем измерять цену монеты?</b>\n"
+        "💵 <i>В деньгах</i> — вводишь точную сумму (например: 65000$).\n"
+        "📈 <i>В процентах</i> — выберешь рост или падение в % от текущего значения.",
+        reply_markup=builder
+    )
+    state.set_state("complex_price_unit")
 # --- ВЫБОР МЕТРИКИ (Цена или Объем) ---
 
 @dp.callback_query(SmartAlertForm.simple_metric, F.data.startswith("s_metric:"))
