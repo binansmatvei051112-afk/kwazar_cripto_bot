@@ -243,7 +243,7 @@ async def add_smart_alert(
 
 DEFAULT_TRACKED_SYMBOLS = [
     f"{coin}USDT" for coin in
-    ["BTC", "ETH", "BNB", "SOL", "XRP", "DOGE", "TON", "ADA", "AVAX", "LINK"]
+    ["BTC", "ETH", "BNB", "SOL", "XRP", "DOGE", "PEPE", "ADA", "AVAX", "LINK"]
 ]
 
 async def fetch_all_volumes_tf(window_size: str = "1d", quote_asset: str = "USDT", symbols: list = None) -> dict:

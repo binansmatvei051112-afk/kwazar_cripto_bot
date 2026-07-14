@@ -42,7 +42,7 @@ logger.addHandler(console_handler)
 bot = Bot(token=BOT_TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
 dp = Dispatcher()
 
-POPULAR_COINS = ["BTC", "ETH", "BNB", "SOL", "XRP", "DOGE", "TON", "ADA", "AVAX", "LINK"]
+POPULAR_COINS = ["BTC", "ETH", "BNB", "SOL", "XRP", "DOGE", "PEPE", "ADA", "AVAX", "LINK"]
  
 VOL_TF_NAMES = {"1h": "1 час", "4h": "4 часа", "1d": "24 часа", "7d": "7 дней"}
 VOL_TF_SHORT = {"1h": "1ч", "4h": "4ч", "1d": "24ч", "7d": "7д"}
@@ -480,25 +480,35 @@ async def complex_init_money_cmd(callback: types.CallbackQuery, state: FSMContex
     
 @dp.message(SmartAlertForm.complex_price_input)
 async def cmd_input_price(message: types.Message, state: FSMContext):
-    
-    price = message.text.replace(",", ".").strip()
-    if (type(price) != type(3.4) or type(price) != type(3)):
-        if price > 0:
-            await state.update_data(price_target=price)
-        else:
-            return await message.answer(
-                "<i>Напишите цену монеты больше 0</i>\n"
-                "<b>(Пример числа: <code>62000 или 12.5</code>)</b>"
-            )
-    else:
+    try:
+        price = float(message.text.replace(",", ".").strip())
+        if not price > 0:
+            raise ValueError
+    except ValueError:
         return await message.answer(
-            "<i>Напишите корректную желаемую цену монеты</i>\n"
+            "<i>Напишите цену монеты больше 0</i>\n"
+            "<i>Или напишите корректную желаемую цену монеты</i>"
             "<b>(Пример числа: <code>62000 или 12.5</code>)</b>"
         )
-    
+
+    data = await state.get_data()
+    direction = "UP" if price > data['base_price'] else "DOWN"
+    await state.update_data(price_target=price, price_dir=direction)
+
+    dir_text = "вырастет выше" if direction == "UP" else "упадет ниже"
+
+    builder = InlineKeyboardBuilder()
+    for tf_key in ["1h", "4h", "1d", "7d"]:
+        builder.add(InlineKeyboardButton(text=f"⏱ {VOL_TF_NAMES[tf_key]}", callback_data=f"c_voltf:{tf_key}"))
+    builder.adjust(2, 2)
+
     await message.answer(
-        f"О"
-                         )
+        f"✅ Условие по цене сохранено: цена <b>{dir_text} {price:,.2f} $</b>\n\n"
+        "<b>Шаг 5: Теперь настроим второе условие — объем.</b>\n"
+        "За какой период сравнивать объем торгов?",
+        reply_markup=builder.as_markup()
+    )
+    await state.set_state(SmartAlertForm.complex_vol_tf)
 
 @dp.callback_query(SmartAlertForm.simple_metric, F.data.startswith("s_metric:"))
 async def simple_metric_chosen(callback: types.CallbackQuery, state: FSMContext):
