@@ -77,7 +77,8 @@ class SmartAlertForm(StatesGroup):
     complex_operator = State()      # Оператор: И или ИЛИ
     
     # Настройка 1-го условия (Цена)
-    complex_price_unit = State()    # Деньги или Проценты для цены
+    complex_price_unit = State() 
+    complex_price_input = State()
     complex_price_val = State()     # Ввод/выбор значения цены
     # Настройка 2-го условия (Объем) — период объема выбираем сразу после
     # завершения настройки цены, перед вводом единицы измерения объема
@@ -422,6 +423,9 @@ async def complex_alert_stub(callback: types.CallbackQuery, state: FSMContext):
     # -> complex_vol_tf (выбор периода объема, сразу после завершения условия по цене) ->
     # -> complex_vol_unit -> complex_vol_val -> сохранение через add_smart_alert(vol_tf=...)
     await callback.answer()
+    await state.update_data(alert_type="complex")
+    await state.update_data(price_check=1)
+    await state.update_data(vol_check=1)
     builder = InlineKeyboardBuilder()
     builder.add(InlineKeyboardButton(text="ИЛИ (OR)", callback_data="complex_operator:or"))
     builder.add(InlineKeyboardButton(text="И (AND)", callback_data="complex_operator:and"))
@@ -450,10 +454,51 @@ async def complex_operator_cmd(callback: types.CallbackQuery, state: FSMContext)
         "<b>Шаг 4: В чем будем измерять цену монеты?</b>\n"
         "💵 <i>В деньгах</i> — вводишь точную сумму (например: 65000$).\n"
         "📈 <i>В процентах</i> — выберешь рост или падение в % от текущего значения.",
-        reply_markup=builder
+        reply_markup=builder.as_markup()
     )
-    state.set_state("complex_price_unit")
+    await state.set_state(SmartAlertForm.complex_price_unit)
 # --- ВЫБОР МЕТРИКИ (Цена или Объем) ---
+@dp.callback_query(SmartAlertForm.complex_price_unit, F.data == "complex_unit:money")
+async def complex_init_money_cmd(callback: types.CallbackQuery, state: FSMContext):
+    await callback.answer()
+    data = await state.get_data()
+    coin = data['coin']
+    
+    base_val = f"{data['base_price']} $"
+    ex_val = "65000 или 0.05"
+    name = "целевую цену"
+        
+    await callback.message.edit_text(
+        f"💵 <b>Ввод точного значения</b>\n\n"
+        f"🪙 Монета: <b>{coin}</b>\n"
+        f"📍 Текущее значение: <code>{base_val}</code>\n\n"
+        f"✏️ <b>Напиши в чат {name}:</b>\n"
+        f"<i>(Пример числа: <code>{ex_val}</code>)</i>"
+    )
+    
+    await state.set_state(SmartAlertForm.complex_price_input)
+    
+@dp.message(SmartAlertForm.complex_price_input)
+async def cmd_input_price(message: types.Message, state: FSMContext):
+    
+    price = message.text.replace(",", ".").strip()
+    if (type(price) != type(3.4) or type(price) != type(3)):
+        if price > 0:
+            await state.update_data(price_target=price)
+        else:
+            return await message.answer(
+                "<i>Напишите цену монеты больше 0</i>\n"
+                "<b>(Пример числа: <code>62000 или 12.5</code>)</b>"
+            )
+    else:
+        return await message.answer(
+            "<i>Напишите корректную желаемую цену монеты</i>\n"
+            "<b>(Пример числа: <code>62000 или 12.5</code>)</b>"
+        )
+    
+    await message.answer(
+        f"О"
+                         )
 
 @dp.callback_query(SmartAlertForm.simple_metric, F.data.startswith("s_metric:"))
 async def simple_metric_chosen(callback: types.CallbackQuery, state: FSMContext):
