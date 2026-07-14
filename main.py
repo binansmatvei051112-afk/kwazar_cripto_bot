@@ -53,12 +53,14 @@ main_kb = ReplyKeyboardMarkup(
         [KeyboardButton(text="Мои алерты"), KeyboardButton(text="Показать график монеты")],
         [KeyboardButton(text="🔍 Курсы валют"), KeyboardButton(text="📊 Объемы (24ч)")]
     ],
-    resize_keyboard=True
+    resize_keyboard=True,
+    is_persistent=True
 )
 
 cancel_kb = ReplyKeyboardMarkup(
     keyboard=[[KeyboardButton(text="🚫 Отмена")]],
-    resize_keyboard=True
+    resize_keyboard=True,
+    is_persistent=True
 )
 
 class SmartAlertForm(StatesGroup):
@@ -78,13 +80,12 @@ class SmartAlertForm(StatesGroup):
     
     # Настройка 1-го условия (Цена)
     complex_price_unit = State() 
-    complex_price_input = State()
-    complex_price_val = State()     # Ввод/выбор значения цены
+    complex_price_input = State()    # Ввод/выбор значения цены
     # Настройка 2-го условия (Объем) — период объема выбираем сразу после
     # завершения настройки цены, перед вводом единицы измерения объема
     complex_vol_tf = State()
     complex_vol_unit = State()      # Деньги или Проценты для объема
-    complex_vol_val = State()
+    complex_vol_input = State()
 
 class ChartStates(StatesGroup):
     choosing_coin = State()
@@ -509,6 +510,46 @@ async def cmd_input_price(message: types.Message, state: FSMContext):
         reply_markup=builder.as_markup()
     )
     await state.set_state(SmartAlertForm.complex_vol_tf)
+    
+@dp.callback_query(SmartAlertForm.complex_vol_tf, F.data.startswith("c_voltf:"))
+async def complex_tf_cmd(callback: types.CallbackQuery, state: FSMContext):
+    tf_key = callback.data.split(":")[1]
+    await callback.answer()
+    
+    data = await state.get_data()
+    coin = data['coin']
+    
+    if tf_key == '1d':
+        current_val = data.get('base_vol')
+    else:
+        await callback.message.edit_text(f"⏳ Уточняю объем за {VOL_TF_NAMES[tf_key]}...")
+        current_val = await get_symbol_volume(coin, window_size=tf_key)
+    
+    if current_val is None:
+        return await callback.message.edit_text(
+            "❌ Не удалось получить объем за этот период у Binance. Попробуй другой период "
+            "или повтори позже.",
+            reply_markup=InlineKeyboardBuilder()
+                .add(*[InlineKeyboardButton(text=f"⏱ {VOL_TF_NAMES[k]}", callback_data=f"c_voltf:{k}") for k in ["1h", "4h", "1d", "7d"]])
+                .adjust(2, 2).as_markup()
+        )
+    
+    await state.update_data(vol_tf=tf_key, base_vol=current_val)
+
+    builder = InlineKeyboardBuilder()
+    builder.add(InlineKeyboardButton(text="💵 В деньгах ($)", callback_data="c_vol_unit:money"))
+    builder.add(InlineKeyboardButton(text="📈 В процентах (%)", callback_data="c_vol_unit:percent"))
+    builder.adjust(2)
+
+    await callback.message.edit_text(
+        f"✅ Период для объема: <b>{VOL_TF_NAMES[tf_key]}</b>\n\n"
+        f"<i> Объем продажи за это время равен {current_val}$"
+        "<b>Шаг 6: В чем задать цель по объему?</b>\n"
+        "💵 <i>В деньгах</i> — точная сумма (например: 5000000$).\n"
+        "📈 <i>В процентах</i> — рост/падение в % от текущего объема.",
+        reply_markup=builder.as_markup()
+    )
+    await state.set_state(SmartAlertForm.complex_vol_unit)
 
 @dp.callback_query(SmartAlertForm.simple_metric, F.data.startswith("s_metric:"))
 async def simple_metric_chosen(callback: types.CallbackQuery, state: FSMContext):
