@@ -223,7 +223,7 @@ async def check_alerts_loop():
                                 if alert["operator"] == "OR":
                                     if bool_price or bool_vol:
                                         triggered = True
-                                        reason_text = f"{price_text} || {vol_text}"
+                                        reason_text = "".join().filter(None, (price_text, vol_text))
                                         
                             if triggered:
                                 message_text = (
