@@ -543,13 +543,75 @@ async def complex_tf_cmd(callback: types.CallbackQuery, state: FSMContext):
 
     await callback.message.edit_text(
         f"✅ Период для объема: <b>{VOL_TF_NAMES[tf_key]}</b>\n\n"
-        f"<i> Объем продажи за это время равен {current_val}$"
+        f"<i> Объем продажи за это время равен {current_val/ 1_000_000:.2f}$ </i>"
         "<b>Шаг 6: В чем задать цель по объему?</b>\n"
         "💵 <i>В деньгах</i> — точная сумма (например: 5000000$).\n"
         "📈 <i>В процентах</i> — рост/падение в % от текущего объема.",
         reply_markup=builder.as_markup()
     )
     await state.set_state(SmartAlertForm.complex_vol_unit)
+    
+@dp.callback_query(SmartAlertForm.complex_vol_unit, F.data == "c_vol_unit:money")
+async def complex_vol_money_cmd(callback: types.CallbackQuery, state: FSMContext):
+    await callback.answer()
+    data = await state.get_data()
+    coin = data['coin']
+
+    base_vol = f"{data['base_vol'] / 1_000_000:.2f} млн $"
+    ex_val = f"{int(data['base_vol'] * 1.2)}"
+    name = "целевой объем (в долларах)"
+
+    await callback.message.edit_text(
+        f"💵 <b>Ввод точного значения</b>\n\n"
+        f"🪙 Монета: <b>{coin}</b>\n"
+        f"📍 Текущий объем: <code>{base_vol}</code>\n\n"
+        f"✏️ <b>Напиши в чат {name}:</b>\n"
+        f"<i>(Пример числа: <code>{ex_val}</code>)</i>"
+    )
+
+    await state.set_state(SmartAlertForm.complex_vol_input)
+
+@dp.message(SmartAlertForm.complex_vol_input)
+async def cmd_input_vol(message: types.Message, state: FSMContext):
+    try:
+        vol = float(message.text.replace(",", ".").strip())
+        if not vol > 0:
+            raise ValueError
+    except ValueError:
+        return await message.answer(
+            "<i>Напишите объем монеты больше 0</i>\n"
+            "<i>Или напишите корректный желаемый объем монеты</i>"
+            "<b>(Пример числа: <code>6200000 или 130000</code>)</b>"
+        )
+
+    data = await state.get_data()
+    direction = "UP" if vol > data['base_vol'] else "DOWN"
+    vol_tf = data.get('vol_tf', '1d')
+
+    success = await add_smart_alert(
+        user_id=message.chat.id, coin=data['coin'], alert_type='complex',
+        operator=data['operator'].upper(),
+        price_check=1, price_target=data['price_target'], price_dir=data['price_dir'],
+        vol_check=1, vol_target=vol, vol_dir=direction, vol_tf=vol_tf
+    )
+
+    await state.clear()
+
+    dir_price = "выше" if data['price_dir'] == "UP" else "ниже"
+    dir_vol = "выше" if direction == "UP" else "ниже"
+    op_text = "И" if data['operator'].upper() == "AND" else "ИЛИ"
+
+    if success:
+        await message.answer(
+            f"✅ <b>Сложный алерт установлен!</b>\n\n"
+            f"🪙 Монета: <code>{data['coin']}</code>\n"
+            f"🎯 Цена {dir_price} <code>{data['price_target']:,.2f} $</code>\n"
+            f"🔗 <b>{op_text}</b>\n"
+            f"📊 Объем за {VOL_TF_NAMES[vol_tf]} {dir_vol} <code>{vol:,.0f} $</code>",
+            reply_markup=main_kb
+        )
+    else:
+        await message.answer("❌ Не удалось сохранить алерт, попробуй ещё раз.", reply_markup=main_kb)
 
 @dp.callback_query(SmartAlertForm.simple_metric, F.data.startswith("s_metric:"))
 async def simple_metric_chosen(callback: types.CallbackQuery, state: FSMContext):
