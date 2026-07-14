@@ -440,6 +440,9 @@ async def complex_operator_cmd(callback: types.CallbackQuery, state: FSMContext)
     await state.update_data(operator=operator)
     await callback.answer()
     
+    builder = InlineKeyboardBuilder()
+    builder.add(InlineKeyboardButton())
+        
     
 # --- ВЫБОР МЕТРИКИ (Цена или Объем) ---
 
