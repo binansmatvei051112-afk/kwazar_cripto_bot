@@ -1030,7 +1030,19 @@ async def button_my_alerts(message: types.Message):
         else:
             # Задел под Спринт 4 (сложные алерты)
             op_symbol = "&" if a["operator"] == "AND" else "|"
-            button_text = f"⚡️ {coin} [Цена {op_symbol} Объем] ❌"
+            direction_price = "⬆️" if a["price_dir"] == "UP" else "⬇️"
+            val_str_price = f"{a['price_target']:,.2f}$".replace(".00$", "$")
+            
+            direction_vol = "⬆️" if a["vol_dir"] == "UP" else "⬇️"
+            vol = a["vol_target"]
+            if vol >= 1_000_000_000:
+                    vol_str = f"{vol / 1_000_000_000:.2f} млрд$"
+            elif vol >= 1_000_000:
+                    vol_str = f"{vol / 1_000_000:.2f} млн$"
+            else:
+                    vol_str = f"{vol:,.0f}$"
+            
+            button_text = f"⚡️ {coin} [Цена → {direction_price}{val_str_price} {op_symbol} Объем → {direction_vol}{vol}] ❌"
         
         builder.add(InlineKeyboardButton(
             text=button_text,
