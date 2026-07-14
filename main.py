@@ -182,8 +182,49 @@ async def check_alerts_loop():
                                             triggered = True
                                             reason_text = f"📉 Объем за {tf_name} упал ниже <code>{curr_vol / 1_000_000:.2f} млн $</code>!"
                             
-                            # Сложные алерты (a_type == 'complex') подключим в Спринте 4!
-                            
+                            else:
+                                curr_price = prices.get(symbol)
+                                target_price = alert["price_target"]
+                                    
+                                if vol_tf == "1d":
+                                    curr_vol = stats_1d.get(symbol, {}).get("quote_volume", 0)
+                                else:
+                                    curr_vol = extra_stats.get(vol_tf, {}).get(symbol, {}).get("quote_volume", 0)
+                                        
+                                target_vol = alert["vol_target"]
+                                tf_name = VOL_TF_NAMES.get(vol_tf, "24 часа")
+                                
+                                bool_price = False
+                                bool_vol = False
+                                price_text = ""
+                                vol_text = ""
+                                
+                                if curr_price is not None:
+                                    if alert["price_dir"] == "UP" and curr_price >= target_price:
+                                        bool_price = True
+                                        price_text = f"📈 Цена выросла до <code>{curr_price} $</code> (Цель: {target_price} $)"
+                                    elif alert["price_dir"] == "DOWN" and curr_price <= target_price:
+                                        bool_price = True
+                                        price_text = f"📉 Цена упала до <code>{curr_price} $</code> (Цель: {target_price} $)"
+
+                                # 3. Проверяем условие по объему
+                                if curr_vol > 0:
+                                    if alert["vol_dir"] == "UP" and curr_vol >= target_vol:
+                                        bool_vol = True
+                                        vol_text = f"📊 Объем за {tf_name} превысил <code>{curr_vol / 1_000_000:.2f} млн $</code>!"
+                                    elif alert["vol_dir"] == "DOWN" and curr_vol <= target_vol:
+                                        bool_vol = True
+                                        vol_text = f"📉 Объем за {tf_name} упал ниже <code>{curr_vol / 1_000_000:.2f} млн $</code>!"
+
+                                if alert["operator"] == "AND":
+                                    if bool_price and bool_vol:
+                                        triggered = True
+                                        reason_text = f"{price_text} && {vol_text}"
+                                if alert["operator"] == "OR":
+                                    if bool_price or bool_vol:
+                                        triggered = True
+                                        reason_text = f"{price_text} || {vol_text}"
+                                        
                             if triggered:
                                 message_text = (
                                     f"🚨 <b>СРАБОТАЛ АЛЕРТ!</b> 🚨\n\n"
@@ -1042,7 +1083,7 @@ async def button_my_alerts(message: types.Message):
             else:
                     vol_str = f"{vol:,.0f}$"
             
-            button_text = f"⚡️ {coin} [Цена → {direction_price}{val_str_price} {op_symbol} Объем → {direction_vol}{vol}] ❌"
+            button_text = f"⚡️ {coin} [Цена → {direction_price}{val_str_price} {op_symbol} Объем → {direction_vol}{vol}$] ❌"
         
         builder.add(InlineKeyboardButton(
             text=button_text,
