@@ -805,8 +805,11 @@ async def complex_percent_confirm_handler_vol(callback: types.CallbackQuery, sta
 
 @dp.message(SmartAlertForm.complex_vol_input)
 async def cmd_input_vol(message: types.Message, state: FSMContext):
+    
+    data = await state.get_data()
+    is_percent = data.get("is_manual_percent", False)
     try:
-        vol = float(message.text.replace(",", ".").strip())
+        row_vol = float(message.text.replace(",", ".").strip())
         if not vol > 0:
             raise ValueError
     except ValueError:
@@ -816,7 +819,12 @@ async def cmd_input_vol(message: types.Message, state: FSMContext):
             "<b>(Пример числа: <code>6200000 или 130000</code>)</b>"
         )
 
-    data = await state.get_data()
+    if is_percent:
+        current_pct = row_vol
+        vol = data['base_vol'] * (1 + current_pct / 100)
+    else:
+        vol = row_vol
+        
     direction = "UP" if vol > data['base_vol'] else "DOWN"
     vol_tf = data.get('vol_tf', '1d')
 
