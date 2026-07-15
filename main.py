@@ -1382,7 +1382,7 @@ async def on_startup():
     scheduler.start()
     logger.info("Планировщик задач запущен!")
     
-@dp.message(F.text == "📊 Объемы (24ч)")
+@dp.message(F.text == "📊 Объемы")
 async def menu_volumes_start(message: types.Message):
     builder = InlineKeyboardBuilder()
     builder.add(InlineKeyboardButton(text="⏱ 1 час", callback_data="show_vol:1h"))
