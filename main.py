@@ -51,7 +51,7 @@ main_kb = ReplyKeyboardMarkup(
     keyboard=[
         [KeyboardButton(text="Создать алерт")],
         [KeyboardButton(text="Мои алерты"), KeyboardButton(text="Показать график монеты")],
-        [KeyboardButton(text="🔍 Курсы валют"), KeyboardButton(text="📊 Объемы (24ч)")]
+        [KeyboardButton(text="🔍 Курсы валют"), KeyboardButton(text="📊 Объемы ")]
     ],
     resize_keyboard=True,
     is_persistent=True
