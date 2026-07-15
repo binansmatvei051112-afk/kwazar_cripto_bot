@@ -1058,19 +1058,15 @@ def get_percent_menu_text_and_kb(data: dict):
     builder.adjust(3, 3, 2, 1)
     return text, builder.as_markup()
 
-# --- СТАРТ МЕНЮ ПРОЦЕНТОВ ---
-
 @dp.callback_query(SmartAlertForm.simple_unit, F.data == "s_unit:percent")
 async def simple_unit_percent_chosen(callback: types.CallbackQuery, state: FSMContext):
     await callback.answer()
-    await state.update_data(current_pct=0.0) # Стартуем с 0%
+    await state.update_data(current_pct=0.0)
     data = await state.get_data()
     
     text, kb = get_percent_menu_text_and_kb(data)
     await callback.message.edit_text(text, reply_markup=kb)
     await state.set_state(SmartAlertForm.simple_percent_menu)
-
-# --- НАЖАТИЕ НА КНОПКИ ПЛЮС/МИНУС/СБРОС ---
 
 @dp.callback_query(SmartAlertForm.simple_percent_menu, F.data.startswith("pct_add:"))
 async def s_percent_add_handler(callback: types.CallbackQuery, state: FSMContext):
@@ -1085,7 +1081,7 @@ async def s_percent_add_handler(callback: types.CallbackQuery, state: FSMContext
     try:
         await callback.message.edit_text(text, reply_markup=kb)
     except Exception:
-        pass # Игнорируем, если текст не изменился
+        pass 
     await callback.answer(f"{'+' if delta > 0 else ''}{delta}%")
 
 @dp.callback_query(SmartAlertForm.simple_percent_menu, F.data == "pct_reset")
@@ -1101,8 +1097,6 @@ async def percent_reset_handler(callback: types.CallbackQuery, state: FSMContext
         pass
     await callback.answer("Сброшено в 0%")
 
-# --- РУЧНОЙ ВВОД ПРОЦЕНТА ---
-
 @dp.callback_query(SmartAlertForm.simple_percent_menu, F.data == "pct_manual")
 async def percent_manual_start(callback: types.CallbackQuery, state: FSMContext):
     await callback.answer()
@@ -1112,11 +1106,9 @@ async def percent_manual_start(callback: types.CallbackQuery, state: FSMContext)
         "• Для роста пиши просто число: <code>15</code> или <code>2.5</code>\n"
         "• Для падения пиши с минусом: <code>-7</code> или <code>-3.3</code>"
     )
-    # Используем старый стейт simple_value_input, но с флагом, что это проценты!
+    
     await state.update_data(is_manual_percent=True)
     await state.set_state(SmartAlertForm.simple_value_input)
-
-# --- ПОДТВЕРЖДЕНИЕ И СОХРАНЕНИЕ В БД ---
 
 @dp.callback_query(SmartAlertForm.simple_percent_menu, F.data == "pct_confirm")
 async def percent_confirm_handler(callback: types.CallbackQuery, state: FSMContext):
@@ -1161,8 +1153,6 @@ async def percent_confirm_handler(callback: types.CallbackQuery, state: FSMConte
     else:
         await callback.message.answer("❌ Произошла ошибка при сохранении в базу.", reply_markup=main_kb)
 
-# --- ФИНАЛ СПРИНТА 2: ВВОД ЧИСЛА И СОХРАНЕНИЕ ---
-
 @dp.message(SmartAlertForm.simple_value_input)
 async def simple_value_received(message: types.Message, state: FSMContext):
     data = await state.get_data()
@@ -1170,7 +1160,7 @@ async def simple_value_received(message: types.Message, state: FSMContext):
     
     try:
         raw_val = float(message.text.replace(",", ".").replace(" ", ""))
-        # Если это доллары — число должно быть строго > 0. Если проценты — любое кроме 0!
+        
         if (not is_percent and raw_val <= 0) or (is_percent and raw_val == 0):
             raise ValueError
     except ValueError:
@@ -1182,7 +1172,7 @@ async def simple_value_received(message: types.Message, state: FSMContext):
     coin = data['coin']
     metric = data['metric']
     
-    # ЕСЛИ ЭТО РУЧНОЙ ВВОД ПРОЦЕНТОВ — считаем цель от базовой цены!
+    
     if is_percent:
         current_pct = raw_val
         if metric == 'price':
@@ -1196,7 +1186,7 @@ async def simple_value_received(message: types.Message, state: FSMContext):
         else:
             current_pct = ((target_val - data['base_vol']) / data['base_vol']) * 100
 
-    # Определяем направление (UP если цель больше текущего, иначе DOWN)
+
     if metric == 'price':
         direction = "UP" if target_val > data['base_price'] else "DOWN"
         success = await add_smart_alert(
@@ -1296,7 +1286,7 @@ async def button_my_alerts(message: types.Message):
     builder = InlineKeyboardBuilder()
     
     for a in user_alerts:
-        coin = a["coin_symbol"].replace("USDT", "") # Убираем USDT для красоты на кнопке
+        coin = a["coin_symbol"].replace("USDT", "")
         
         if a["alert_type"] == "simple":
             if a["price_check"]:
