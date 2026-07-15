@@ -87,7 +87,7 @@ class SmartAlertForm(StatesGroup):
     complex_vol_tf = State()
     complex_vol_unit = State()      # Деньги или Проценты для объема
     complex_vol_input = State()
-    complex_percent_menu_price = State()
+    complex_percent_menu_vol = State()
 
 class ChartStates(StatesGroup):
     choosing_coin = State()
@@ -523,7 +523,7 @@ async def complex_init_money_cmd(callback: types.CallbackQuery, state: FSMContex
     await state.set_state(SmartAlertForm.complex_price_input)
     
 @dp.callback_query(SmartAlertForm.complex_price_unit, F.data == "complex_unit:percent")
-async def complex_init_percent_cmd(callback: types.CallbackQuery, state: FSMContext):
+async def complex_init_percent_price_cmd(callback: types.CallbackQuery, state: FSMContext):
     await callback.answer()
     await state.update_data(current_pct=0.0)
     data = await state.get_data()
@@ -533,7 +533,7 @@ async def complex_init_percent_cmd(callback: types.CallbackQuery, state: FSMCont
     await state.set_state(SmartAlertForm.complex_percent_menu_price)
     
 @dp.callback_query(SmartAlertForm.complex_percent_menu_price, F.data.startswith("complex_pct_add:"))
-async def complex_percent_add_handler(callback: types.CallbackQuery, state: FSMContext):
+async def complex_percent_add_handler_price(callback: types.CallbackQuery, state: FSMContext):
     delta = float(callback.data.split(":")[1])
     data = await state.get_data()
     new_pct = round(data.get('current_pct', 0.0) + delta, 1)
@@ -549,7 +549,7 @@ async def complex_percent_add_handler(callback: types.CallbackQuery, state: FSMC
     await callback.answer(f"{'+' if delta > 0 else ''}{delta}%")
     
 @dp.callback_query(SmartAlertForm.complex_percent_menu_price, F.data == "complex_pct_reset")
-async def complex_percent_reset_handler(callback: types.CallbackQuery, state: FSMContext):
+async def complex_percent_reset_handler_price(callback: types.CallbackQuery, state: FSMContext):
     await state.update_data(current_pct=0.0)
     data = await state.get_data()
     data['current_pct'] = 0.0
@@ -562,7 +562,7 @@ async def complex_percent_reset_handler(callback: types.CallbackQuery, state: FS
     await callback.answer("Сброшено в 0%")
     
 @dp.callback_query(SmartAlertForm.complex_percent_menu_price, F.data == "complex_pct_manual")
-async def percent_manual_start(callback: types.CallbackQuery, state: FSMContext):
+async def percent_manual_start_price(callback: types.CallbackQuery, state: FSMContext):
     await callback.answer()
     await callback.message.edit_text(
         "✏️ <b>Ручной ввод процента</b>\n\n"
@@ -575,7 +575,7 @@ async def percent_manual_start(callback: types.CallbackQuery, state: FSMContext)
     await state.set_state(SmartAlertForm.complex_price_input)
     
 @dp.callback_query(SmartAlertForm.complex_percent_menu_price, F.data == "complex_pct_confirm")
-async def percent_confirm_handler(callback: types.CallbackQuery, state: FSMContext):
+async def complex_percent_confirm_handler_price(callback: types.CallbackQuery, state: FSMContext):
     await callback.message.delete()
     data = await state.get_data()
     current_pct = data['current_pct']
@@ -704,6 +704,97 @@ async def complex_vol_money_cmd(callback: types.CallbackQuery, state: FSMContext
     )
 
     await state.set_state(SmartAlertForm.complex_vol_input)
+    
+@dp.callback_query(SmartAlertForm.complex_vol_unit, F.data == "c_vol_unit:percent")
+async def complex_init_percent_vol_cmd(callback: types.CallbackQuery, state: FSMContext):
+    await callback.answer()
+    await state.update_data(current_pct=0.0)
+    data = await state.get_data()
+    
+    text, kb = get_percent_menu_text_and_kb_complex(data, metric="vol")
+    await callback.message.edit_text(text, reply_markup=kb)
+    await state.set_state(SmartAlertForm.complex_percent_menu_vol)
+    
+@dp.callback_query(SmartAlertForm.complex_percent_menu_vol, F.data == "complex_pct_reset")
+async def complex_percent_reset_handler_vol(callback: types.CallbackQuery, state: FSMContext):
+    await state.update_data(current_pct=0.0)
+    data = await state.get_data()
+    data['current_pct'] = 0.0
+    
+    text, kb = get_percent_menu_text_and_kb_complex(data, metric='vol')
+    try:
+        await callback.message.edit_text(text, reply_markup=kb)
+    except Exception:
+        pass
+    await callback.answer("Сброшено в 0%")
+    
+@dp.callback_query(SmartAlertForm.complex_percent_menu_vol, F.data == "complex_pct_manual")
+async def percent_manual_start_vol(callback: types.CallbackQuery, state: FSMContext):
+    await callback.answer()
+    await callback.message.edit_text(
+        "✏️ <b>Ручной ввод процента</b>\n\n"
+        "Напиши в чат любое число (процент изменения).\n"
+        "• Для роста пиши просто число: <code>15</code> или <code>2.5</code>\n"
+        "• Для падения пиши с минусом: <code>-7</code> или <code>-3.3</code>"
+    )
+    # Используем старый стейт complex_price_input, но с флагом, что это проценты!
+    await state.update_data(is_manual_percent=True)
+    await state.set_state(SmartAlertForm.complex_vol_input)
+    
+@dp.callback_query(SmartAlertForm.complex_percent_menu_vol, F.data.startswith("complex_pct_add:"))
+async def complex_percent_add_handler_vol(callback: types.CallbackQuery, state: FSMContext):
+    delta = float(callback.data.split(":")[1])
+    data = await state.get_data()
+    new_pct = round(data.get('current_pct', 0.0) + delta, 1)
+    
+    await state.update_data(current_pct=new_pct)
+    data['current_pct'] = new_pct
+    
+    text, kb = get_percent_menu_text_and_kb_complex(data, metric='price')
+    try:
+        await callback.message.edit_text(text, reply_markup=kb)
+    except Exception:
+        pass
+    await callback.answer(f"{'+' if delta > 0 else ''}{delta}%")
+    
+@dp.callback_query(SmartAlertForm.complex_percent_menu_vol, F.data == "complex_pct_confirm")
+async def complex_percent_confirm_handler_vol(callback: types.CallbackQuery, state: FSMContext):
+    await callback.message.delete()
+    await callback.answer()
+    data = await state.get_data()
+    current_pct = data['current_pct']
+    
+    if current_pct == 0.0:
+        return await callback.answer("❌ Процент изменения не может быть равен 0!", show_alert=True)
+        
+    vol_tf = data.get('vol_tf', '1d')
+    vol = data['base_vol'] * (1 + current_pct / 100)
+    direction = "UP" if current_pct > 0 else "DOWN"
+    
+    success = await add_smart_alert(
+        user_id=callback.message.chat.id, coin=data['coin'], alert_type='complex',
+        operator=data['operator'].upper(),
+        price_check=1, price_target=data['price_target'], price_dir=data['price_dir'],
+        vol_check=1, vol_target=vol, vol_dir=direction, vol_tf=vol_tf
+    )
+    
+    await state.clear()
+    
+    dir_price = "выше" if data['price_dir'] == "UP" else "ниже"
+    dir_vol = "выше" if direction == "UP" else "ниже"
+    op_text = "И" if data['operator'].upper() == "AND" else "ИЛИ"
+
+    if success:
+        await callback.message.edit_text(
+            f"✅ <b>Сложный алерт установлен!</b>\n\n"
+            f"🪙 Монета: <code>{data['coin']}</code>\n"
+            f"🎯 Цена {dir_price} <code>{data['price_target']:,.2f} $</code>\n"
+            f"🔗 <b>{op_text}</b>\n"
+            f"📊 Объем за {VOL_TF_NAMES[vol_tf]} {dir_vol} <code>{vol:,.0f} $</code>",
+            reply_markup=main_kb
+        )
+    else:
+        await callback.edit_text("❌ Не удалось сохранить алерт, попробуй ещё раз.", reply_markup=main_kb)
 
 @dp.message(SmartAlertForm.complex_vol_input)
 async def cmd_input_vol(message: types.Message, state: FSMContext):
