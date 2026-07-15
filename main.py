@@ -532,7 +532,7 @@ async def complex_init_percent_cmd(callback: types.CallbackQuery, state: FSMCont
     await callback.message.edit_text(text, reply_markup=kb)
     await state.set_state(SmartAlertForm.complex_percent_menu_price)
     
-@dp.callback_query(SmartAlertForm.complex_percent_menu_price, F.data == "complex_pct_add:")
+@dp.callback_query(SmartAlertForm.complex_percent_menu_price, F.data.startswith("complex_pct_add:"))
 async def complex_percent_add_handler(callback: types.CallbackQuery, state: FSMContext):
     delta = float(callback.data.split(":")[1])
     data = await state.get_data()
@@ -545,8 +545,8 @@ async def complex_percent_add_handler(callback: types.CallbackQuery, state: FSMC
     try:
         await callback.message.edit_text(text, reply_markup=kb)
     except Exception:
-        pass # Игнорируем, если текст не изменился
-    await callback.answer(f"{'+' if delta > 0 else '-'}{delta}%")
+        pass
+    await callback.answer(f"{'+' if delta > 0 else ''}{delta}%")
     
 @dp.callback_query(SmartAlertForm.complex_percent_menu_price, F.data == "complex_pct_reset")
 async def complex_percent_reset_handler(callback: types.CallbackQuery, state: FSMContext):
@@ -561,7 +561,7 @@ async def complex_percent_reset_handler(callback: types.CallbackQuery, state: FS
         pass
     await callback.answer("Сброшено в 0%")
     
-@dp.callback_query(SmartAlertForm.simple_percent_menu, F.data == "complex_pct_manual")
+@dp.callback_query(SmartAlertForm.complex_percent_menu_price, F.data == "complex_pct_manual")
 async def percent_manual_start(callback: types.CallbackQuery, state: FSMContext):
     await callback.answer()
     await callback.message.edit_text(
@@ -576,6 +576,7 @@ async def percent_manual_start(callback: types.CallbackQuery, state: FSMContext)
     
 @dp.callback_query(SmartAlertForm.complex_percent_menu_price, F.data == "complex_pct_confirm")
 async def percent_confirm_handler(callback: types.CallbackQuery, state: FSMContext):
+    await callback.message.delete()
     data = await state.get_data()
     current_pct = data['current_pct']
     
@@ -620,13 +621,11 @@ async def cmd_input_price(message: types.Message, state: FSMContext):
         )
     
     if is_percent:
-        current_pct = row_price  # Человек ввел процент (например, 5 или -3)
-        target_val = data['base_price'] * (1 + current_pct / 100)
-        price = target_val
+        current_pct = row_price
+        price = data['base_price'] * (1 + current_pct / 100)
     else:
         price = row_price
-        target_val = row_price   # Человек ввел точную цену — она и есть target_val!
-        current_pct = ((target_val - data['base_price']) / data['base_price']) * 100
+        current_pct = ((price - data['base_price']) / data['base_price']) * 100
     
     direction = "UP" if price > data['base_price'] else "DOWN"
     await state.update_data(price_target=price, price_dir=direction)
@@ -963,7 +962,7 @@ async def simple_unit_percent_chosen(callback: types.CallbackQuery, state: FSMCo
     await state.update_data(current_pct=0.0) # Стартуем с 0%
     data = await state.get_data()
     
-    text, kb = get_percent_menu_text_and_kb_complex(data, metric='price')
+    text, kb = get_percent_menu_text_and_kb(data)
     await callback.message.edit_text(text, reply_markup=kb)
     await state.set_state(SmartAlertForm.simple_percent_menu)
 
@@ -978,7 +977,7 @@ async def s_percent_add_handler(callback: types.CallbackQuery, state: FSMContext
     await state.update_data(current_pct=new_pct)
     data['current_pct'] = new_pct
     
-    text, kb = get_percent_menu_text_and_kb_complex(data, metric='price')
+    text, kb = get_percent_menu_text_and_kb(data)
     try:
         await callback.message.edit_text(text, reply_markup=kb)
     except Exception:
@@ -991,7 +990,7 @@ async def percent_reset_handler(callback: types.CallbackQuery, state: FSMContext
     data = await state.get_data()
     data['current_pct'] = 0.0
     
-    text, kb = get_percent_menu_text_and_kb_complex(data, metric='price')
+    text, kb = get_percent_menu_text_and_kb(data)
     try:
         await callback.message.edit_text(text, reply_markup=kb)
     except Exception:
