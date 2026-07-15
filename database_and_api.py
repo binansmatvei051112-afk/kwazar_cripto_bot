@@ -247,23 +247,12 @@ DEFAULT_TRACKED_SYMBOLS = [
 ]
 
 async def fetch_all_volumes_tf(window_size: str = "1d", quote_asset: str = "USDT", symbols: list = None) -> dict:
-    """
-    Получает объемы торгов и изменение цены за заданный период.
-
-    Для '1d' используем стандартный эндпоинт /ticker/24hr — он отдает данные
-    сразу по всем монетам без ограничений.
-
-    Для остальных окон (1h, 4h, 7d и т.д.) Binance требует явно передать
-    'symbol' или 'symbols' — запрос windowSize без указания монет вернет
-    ошибку 400 (code -1128). Поэтому запрашиваем ограниченный список
-    (по умолчанию — DEFAULT_TRACKED_SYMBOLS) через параметр 'symbols'.
-    """
     if window_size == "1d":
         url = "https://api1.binance.com/api/v3/ticker/24hr"
         params = {}
     else:
         symbols_list = symbols or DEFAULT_TRACKED_SYMBOLS
-        # Binance ждет symbols в виде JSON-массива строк, например ["BTCUSDT","ETHUSDT"]
+        
         symbols_json = json.dumps(symbols_list, separators=(",", ":"))
         url = "https://api1.binance.com/api/v3/ticker"
         params = {"windowSize": window_size, "symbols": symbols_json}

@@ -64,28 +64,28 @@ cancel_kb = ReplyKeyboardMarkup(
 )
 
 class SmartAlertForm(StatesGroup):
-    # Шаг 0 и 1: Базовый выбор
-    choosing_coin = State()         # Выбор монеты (BTC, ETH...)
-    choosing_complexity = State()   # Простой или Сложный
     
-    # --- ВЕТКА: ПРОСТОЙ АЛЕРТ ---
-    simple_metric = State()         # Что меряем: Цена или Объем
-    simple_vol_tf = State()         # За какой период смотрим объем (только если metric == 'vol')
-    simple_unit = State()           # В чем меряем: Деньги или Проценты
+    choosing_coin = State()
+    choosing_complexity = State()
+    
+    
+    simple_metric = State()
+    simple_vol_tf = State()
+    simple_unit = State()
     simple_value_input = State()   
-    simple_percent_menu = State()   # Интерактивное меню (если выбрали "Проценты")
+    simple_percent_menu = State()
     
-    # --- ВЕТКА: СЛОЖНЫЙ АЛЕРТ (Спринт 4, пока не реализовано) ---
-    complex_operator = State()      # Оператор: И или ИЛИ
     
-    # Настройка 1-го условия (Цена)
+    complex_operator = State()
+    
+    
     complex_price_unit = State() 
     complex_price_input = State() 
     complex_percent_menu_price = State()
-    # Настройка 2-го условия (Объем) — период объема выбираем сразу после
-    # завершения настройки цены, перед вводом единицы измерения объема
+    
+    
     complex_vol_tf = State()
-    complex_vol_unit = State()      # Деньги или Проценты для объема
+    complex_vol_unit = State()      
     complex_vol_input = State()
     complex_percent_menu_vol = State()
 
@@ -135,15 +135,14 @@ async def check_alerts_loop():
                     async with db.execute("SELECT * FROM smart_alerts") as cursor:
                         alerts = await cursor.fetchall()
 
-                        # Собираем, по каким монетам нужен объем за период, отличный от 1d,
-                        # чтобы сделать один батч-запрос на таймфрейм, а не по одному на алерт
-                        extra_tf_symbols = {}  # {'1h': {'BTCUSDT', ...}, '4h': {...}, '7d': {...}}
+
+                        extra_tf_symbols = {}
                         for alert in alerts:
                             vol_tf = alert["vol_tf"] or "1d"
                             if alert["vol_check"] and vol_tf != "1d":
                                 extra_tf_symbols.setdefault(vol_tf, set()).add(alert["coin_symbol"])
 
-                        extra_stats = {}  # {'1h': {symbol: {...}}, ...}
+                        extra_stats = {} 
                         for tf, symbols in extra_tf_symbols.items():
                             extra_stats[tf] = await fetch_all_volumes_tf(window_size=tf, symbols=list(symbols))
 
@@ -209,7 +208,7 @@ async def check_alerts_loop():
                                         bool_price = True
                                         price_text = f"📉 Цена упала до <code>{curr_price} $</code> (Цель: {target_price} $)"
 
-                                # 3. Проверяем условие по объему
+
                                 if curr_vol > 0:
                                     if alert["vol_dir"] == "UP" and curr_vol >= target_vol:
                                         bool_vol = True
@@ -225,7 +224,7 @@ async def check_alerts_loop():
                                 if alert["operator"] == "OR":
                                     if bool_price or bool_vol:
                                         triggered = True
-                                        reason_text = "".join().filter(None, (price_text, vol_text))
+                                        reason_text = "\n".join(filter(None, [price_text, vol_text]))
                                         
                             if triggered:
                                 message_text = (
@@ -389,7 +388,7 @@ async def start_alert_creation(message: types.Message, state: FSMContext):
     )
     await state.set_state(SmartAlertForm.choosing_coin)
 
-# --- ВЫБОР МОНЕТЫ (Кнопкой или Текстом) ---
+
 
 async def save_coin_and_ask_complexity(message_or_call, state: FSMContext, coin: str):
     prices = await get_cached_prices()
@@ -405,7 +404,7 @@ async def save_coin_and_ask_complexity(message_or_call, state: FSMContext, coin:
             
     current_vol = stats.get(coin, {}).get('quote_volume', 0.0)
     
-    # Сохраняем базовые данные монеты в FSM
+    
     await state.update_data(coin=coin, base_price=current_price, base_vol=current_vol)
     
     builder = InlineKeyboardBuilder()
@@ -442,7 +441,7 @@ async def text_coin_chosen(message: types.Message, state: FSMContext):
         coin += "USDT"
     await save_coin_and_ask_complexity(message, state, coin)
 
-# --- ВЫБОР СЛОЖНОСТИ ---
+
 
 @dp.callback_query(SmartAlertForm.choosing_complexity, F.data == "complexity:simple")
 async def simple_alert_chosen(callback: types.CallbackQuery, state: FSMContext):
@@ -462,10 +461,7 @@ async def simple_alert_chosen(callback: types.CallbackQuery, state: FSMContext):
 
 @dp.callback_query(SmartAlertForm.choosing_complexity, F.data == "complexity:complex")
 async def complex_alert_stub(callback: types.CallbackQuery, state: FSMContext):
-    # TODO (Спринт 4): порядок шагов сложного алерта:
-    # complex_operator -> complex_price_unit -> complex_price_val ->
-    # -> complex_vol_tf (выбор периода объема, сразу после завершения условия по цене) ->
-    # -> complex_vol_unit -> complex_vol_val -> сохранение через add_smart_alert(vol_tf=...)
+    
     await callback.answer()
     await state.update_data(alert_type="complex")
     await state.update_data(price_check=1)
@@ -501,7 +497,7 @@ async def complex_operator_cmd(callback: types.CallbackQuery, state: FSMContext)
         reply_markup=builder.as_markup()
     )
     await state.set_state(SmartAlertForm.complex_price_unit)
-# --- ВЫБОР МЕТРИКИ (Цена или Объем) ---
+    
 @dp.callback_query(SmartAlertForm.complex_price_unit, F.data == "complex_unit:money")
 async def complex_init_money_cmd(callback: types.CallbackQuery, state: FSMContext):
     await callback.answer()
@@ -570,7 +566,7 @@ async def percent_manual_start_price(callback: types.CallbackQuery, state: FSMCo
         "• Для роста пиши просто число: <code>15</code> или <code>2.5</code>\n"
         "• Для падения пиши с минусом: <code>-7</code> или <code>-3.3</code>"
     )
-    # Используем старый стейт complex_price_input, но с флагом, что это проценты!
+    
     await state.update_data(is_manual_percent=True)
     await state.set_state(SmartAlertForm.complex_price_input)
     
@@ -737,7 +733,7 @@ async def percent_manual_start_vol(callback: types.CallbackQuery, state: FSMCont
         "• Для роста пиши просто число: <code>15</code> или <code>2.5</code>\n"
         "• Для падения пиши с минусом: <code>-7</code> или <code>-3.3</code>"
     )
-    # Используем старый стейт complex_price_input, но с флагом, что это проценты!
+    
     await state.update_data(is_manual_percent=True)
     await state.set_state(SmartAlertForm.complex_vol_input)
     
@@ -859,12 +855,12 @@ async def cmd_input_vol(message: types.Message, state: FSMContext):
 
 @dp.callback_query(SmartAlertForm.simple_metric, F.data.startswith("s_metric:"))
 async def simple_metric_chosen(callback: types.CallbackQuery, state: FSMContext):
-    metric = callback.data.split(":")[1] # 'price' или 'vol'
+    metric = callback.data.split(":")[1]
     await state.update_data(metric=metric)
     await callback.answer()
 
     if metric == "vol":
-        # Для объема сначала уточняем, за какой период его сравнивать
+        
         builder = InlineKeyboardBuilder()
         for tf_key in ["1h", "4h", "1d", "7d"]:
             builder.add(InlineKeyboardButton(text=f"⏱ {VOL_TF_NAMES[tf_key]}", callback_data=f"s_voltf:{tf_key}"))
@@ -883,7 +879,7 @@ async def simple_metric_chosen(callback: types.CallbackQuery, state: FSMContext)
     await ask_simple_unit(callback, state)
 
 async def ask_simple_unit(callback: types.CallbackQuery, state: FSMContext):
-    """Общий шаг 4: спрашиваем, в чем задавать цель (деньги или проценты)."""
+    
     data = await state.get_data()
     metric = data['metric']
 
@@ -914,8 +910,6 @@ async def simple_vol_tf_chosen(callback: types.CallbackQuery, state: FSMContext)
     data = await state.get_data()
     coin = data['coin']
 
-    # Базовый объем в кэше считался только за 24ч — для остальных периодов
-    # запрашиваем актуальное значение у Binance именно для этого таймфрейма
     if tf == "1d":
         actual_vol = data.get('base_vol')
     else:
@@ -934,7 +928,7 @@ async def simple_vol_tf_chosen(callback: types.CallbackQuery, state: FSMContext)
     await state.update_data(vol_tf=tf, base_vol=actual_vol)
     await ask_simple_unit(callback, state)
 
-# --- ВЫБОР ЕДИНИЦЫ ИЗМЕРЕНИЯ ---
+
 
 @dp.callback_query(SmartAlertForm.simple_unit, F.data == "s_unit:money")
 async def simple_unit_money_chosen(callback: types.CallbackQuery, state: FSMContext):
@@ -991,18 +985,18 @@ def get_percent_menu_text_and_kb_complex(data: dict, metric: str):
     )
     
     builder = InlineKeyboardBuilder()
-    # 1 ряд: Минусы (падение)
+    
     builder.add(InlineKeyboardButton(text="-10%", callback_data="complex_pct_add:-10"))
     builder.add(InlineKeyboardButton(text="-5%", callback_data="complex_pct_add:-5"))
     builder.add(InlineKeyboardButton(text="-1%", callback_data="complex_pct_add:-1"))
-    # 2 ряд: Плюсы (рост)
+    
     builder.add(InlineKeyboardButton(text="+1%", callback_data="complex_pct_add:1"))
     builder.add(InlineKeyboardButton(text="+5%", callback_data="complex_pct_add:5"))
     builder.add(InlineKeyboardButton(text="+10%", callback_data="complex_pct_add:10"))
-    # 3 ряд: Точные действия
+    
     builder.add(InlineKeyboardButton(text="🔄 Сбросить (0%)", callback_data="complex_pct_reset"))
     builder.add(InlineKeyboardButton(text="✏️ Ввести свой %", callback_data="complex_pct_manual"))
-    # 4 ряд: Подтверждение (только если процент не 0)
+    
     if current_pct != 0.0:
         builder.add(InlineKeyboardButton(
             text=f"✅ Установить алерт ({sign}{current_pct:.1f}%)", 
@@ -1043,18 +1037,18 @@ def get_percent_menu_text_and_kb(data: dict):
     )
     
     builder = InlineKeyboardBuilder()
-    # 1 ряд: Минусы (падение)
+    
     builder.add(InlineKeyboardButton(text="-10%", callback_data="pct_add:-10"))
     builder.add(InlineKeyboardButton(text="-5%", callback_data="pct_add:-5"))
     builder.add(InlineKeyboardButton(text="-1%", callback_data="pct_add:-1"))
-    # 2 ряд: Плюсы (рост)
+    
     builder.add(InlineKeyboardButton(text="+1%", callback_data="pct_add:1"))
     builder.add(InlineKeyboardButton(text="+5%", callback_data="pct_add:5"))
     builder.add(InlineKeyboardButton(text="+10%", callback_data="pct_add:10"))
-    # 3 ряд: Точные действия
+    
     builder.add(InlineKeyboardButton(text="🔄 Сбросить (0%)", callback_data="pct_reset"))
     builder.add(InlineKeyboardButton(text="✏️ Ввести свой %", callback_data="pct_manual"))
-    # 4 ряд: Подтверждение (только если процент не 0)
+    
     if current_pct != 0.0:
         builder.add(InlineKeyboardButton(
             text=f"✅ Установить алерт ({sign}{current_pct:.1f}%)", 
@@ -1343,7 +1337,7 @@ async def button_my_alerts(message: types.Message):
             callback_data=f"delete_alert:{a['id']}"
         ))
     
-    builder.adjust(1) # По 1 кнопке в ряд, чтобы текст не обрезался
+    builder.adjust(1) 
     
     await message.answer(
         "📋 <b>Твои активные алерты:</b>\n\n"
@@ -1426,7 +1420,7 @@ async def menu_volumes_show(callback: types.CallbackQuery):
             sign = "🟢 +" if change > 0 else "🔴 "
             text += f"🔹 <b>{coin}</b>: {vol_str} (<i>{sign}{change:.2f}%</i>)\n"
             
-    # Добавляем кнопки снизу, чтобы пользователь мог сразу переключить таймфрейм!
+            
     builder = InlineKeyboardBuilder()
     for t_key, t_name in [("1h", "1ч"), ("4h", "4ч"), ("1d", "24ч"), ("7d", "7д")]:
         if t_key != tf:
