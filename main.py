@@ -750,7 +750,7 @@ async def complex_percent_add_handler_vol(callback: types.CallbackQuery, state: 
     await state.update_data(current_pct=new_pct)
     data['current_pct'] = new_pct
     
-    text, kb = get_percent_menu_text_and_kb_complex(data, metric='price')
+    text, kb = get_percent_menu_text_and_kb_complex(data, metric='vol')
     try:
         await callback.message.edit_text(text, reply_markup=kb)
     except Exception:
@@ -759,14 +759,16 @@ async def complex_percent_add_handler_vol(callback: types.CallbackQuery, state: 
     
 @dp.callback_query(SmartAlertForm.complex_percent_menu_vol, F.data == "complex_pct_confirm")
 async def complex_percent_confirm_handler_vol(callback: types.CallbackQuery, state: FSMContext):
-    await callback.message.delete()
-    await callback.answer()
     data = await state.get_data()
-    current_pct = data['current_pct']
+    current_pct = data.get('current_pct', 0.0)
     
     if current_pct == 0.0:
         return await callback.answer("❌ Процент изменения не может быть равен 0!", show_alert=True)
         
+    await callback.answer()
+    
+    await callback.message.delete()
+    
     vol_tf = data.get('vol_tf', '1d')
     vol = data['base_vol'] * (1 + current_pct / 100)
     direction = "UP" if current_pct > 0 else "DOWN"
@@ -785,7 +787,8 @@ async def complex_percent_confirm_handler_vol(callback: types.CallbackQuery, sta
     op_text = "И" if data['operator'].upper() == "AND" else "ИЛИ"
 
     if success:
-        await callback.message.edit_text(
+        
+        await callback.message.answer(
             f"✅ <b>Сложный алерт установлен!</b>\n\n"
             f"🪙 Монета: <code>{data['coin']}</code>\n"
             f"🎯 Цена {dir_price} <code>{data['price_target']:,.2f} $</code>\n"
@@ -794,7 +797,11 @@ async def complex_percent_confirm_handler_vol(callback: types.CallbackQuery, sta
             reply_markup=main_kb
         )
     else:
-        await callback.edit_text("❌ Не удалось сохранить алерт, попробуй ещё раз.", reply_markup=main_kb)
+        
+        await callback.message.answer(
+            "❌ Не удалось сохранить алерт, попробуй ещё раз.", 
+            reply_markup=main_kb
+        )
 
 @dp.message(SmartAlertForm.complex_vol_input)
 async def cmd_input_vol(message: types.Message, state: FSMContext):
@@ -1304,8 +1311,7 @@ async def button_my_alerts(message: types.Message):
             else:
                 button_text = f"❓ {coin} (простой алерт) ❌"
         else:
-            # Задел под Спринт 4 (сложные алерты)
-            op_symbol = "&" if a["operator"] == "AND" else "|"
+            op_symbol = "&" if a["operator"] == "AND" else "||"
             direction_price = "⬆️" if a["price_dir"] == "UP" else "⬇️"
             val_str_price = f"{a['price_target']:,.2f}$".replace(".00$", "$")
             
@@ -1317,8 +1323,8 @@ async def button_my_alerts(message: types.Message):
                     vol_str = f"{vol / 1_000_000:.2f} млн$"
             else:
                     vol_str = f"{vol:,.0f}$"
-            
-            button_text = f"⚡️ {coin} [Цена → {direction_price}{val_str_price} {op_symbol} Объем → {direction_vol}{vol}$] ❌"
+            beautiful_vol = f"{vol:,.2f}".replace(",", " ").replace(".", ",")
+            button_text = f"⚡️ {coin} [Цена → {direction_price}{val_str_price} {op_symbol} Объем → {direction_vol}{beautiful_vol} $] ❌"
         
         builder.add(InlineKeyboardButton(
             text=button_text,
