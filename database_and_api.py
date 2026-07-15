@@ -70,7 +70,7 @@ async def get_all_users() -> list:
 async def fetch_binance_prices(quote_asset: str = None) -> dict:
     try:
         async with aiohttp.ClientSession(trust_env=True) as session:
-            async with session.get(BINANCE_API_URL, timeout=15) as response:
+            async with session.get(BINANCE_API_URL, timeout=20) as response:
                 if response.status == 200:
                     data = await response.json()
                     prices = {item['symbol']: float(item['price']) for item in data}
@@ -177,7 +177,7 @@ async def fetch_binance_24h_stats(quote_asset: str = "USDT") -> dict:
     
     try:
         async with aiohttp.ClientSession(trust_env=True) as session:
-            async with session.get(BINANCE_24HR_URL, timeout=15) as response:
+            async with session.get(BINANCE_24HR_URL, timeout=20) as response:
                 if response.status == 200:
                     data = await response.json()
                     stats = {}
@@ -259,7 +259,7 @@ async def fetch_all_volumes_tf(window_size: str = "1d", quote_asset: str = "USDT
 
     try:
         async with aiohttp.ClientSession(trust_env=True) as session:
-            async with session.get(url, params=params, timeout=15) as response:
+            async with session.get(url, params=params, timeout=20) as response:
                 if response.status == 200:
                     data = await response.json()
                     return {
