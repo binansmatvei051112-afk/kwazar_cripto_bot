@@ -810,8 +810,12 @@ async def cmd_input_vol(message: types.Message, state: FSMContext):
     is_percent = data.get("is_manual_percent", False)
     try:
         row_vol = float(message.text.replace(",", ".").strip())
-        if not vol > 0:
-            raise ValueError
+        if not is_percent:
+            if not row_vol > 0:
+                raise ValueError
+        else:
+            if not row_vol != 0:
+                raise ValueError
     except ValueError:
         return await message.answer(
             "<i>Напишите объем монеты больше 0</i>\n"
