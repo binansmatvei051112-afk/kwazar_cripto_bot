@@ -528,7 +528,7 @@ async def complex_init_percent_cmd(callback: types.CallbackQuery, state: FSMCont
     await state.update_data(current_pct=0.0)
     data = await state.get_data()
     
-    text, kb = get_percent_menu_text_and_kb(data)
+    text, kb = get_percent_menu_text_and_kb_complex(data, metric="price")
     await callback.message.edit_text(text, reply_markup=kb)
     await state.set_state(SmartAlertForm.complex_percent_menu_price)
     
@@ -541,7 +541,7 @@ async def complex_percent_add_handler(callback: types.CallbackQuery, state: FSMC
     await state.update_data(current_pct=new_pct)
     data['current_pct'] = new_pct
     
-    text, kb = get_percent_menu_text_and_kb(data)
+    text, kb = get_percent_menu_text_and_kb_complex(data, metric='price')
     try:
         await callback.message.edit_text(text, reply_markup=kb)
     except Exception:
@@ -554,7 +554,7 @@ async def complex_percent_reset_handler(callback: types.CallbackQuery, state: FS
     data = await state.get_data()
     data['current_pct'] = 0.0
     
-    text, kb = get_percent_menu_text_and_kb(data)
+    text, kb = get_percent_menu_text_and_kb_complex(data, metric='price')
     try:
         await callback.message.edit_text(text, reply_markup=kb)
     except Exception:
@@ -574,11 +574,9 @@ async def percent_manual_start(callback: types.CallbackQuery, state: FSMContext)
     await state.update_data(is_manual_percent=True)
     await state.set_state(SmartAlertForm.complex_price_input)
     
-@dp.callback_query(SmartAlertForm.complex_price_input, F.data == "complex_pct_confirm")
+@dp.callback_query(SmartAlertForm.complex_percent_menu_price, F.data == "complex_pct_confirm")
 async def percent_confirm_handler(callback: types.CallbackQuery, state: FSMContext):
     data = await state.get_data()
-    coin = data['coin']
-    metric = data['metric']
     current_pct = data['current_pct']
     
     if current_pct == 0.0:
@@ -586,18 +584,24 @@ async def percent_confirm_handler(callback: types.CallbackQuery, state: FSMConte
         
     target_val = data['base_price'] * (1 + current_pct / 100)
     direction = "UP" if current_pct > 0 else "DOWN"
-    dir_text = "📈 выросла на" if direction == "UP" else "📉 упала на"
-    val_str = f"<b>{abs(current_pct)}%</b> (до <code>{target_val:,.2f} $</code>)"
-        
-    await state.set_state(SmartAlertForm)
+    dir_text = "вырастет выше" if direction == "UP" else "упадет ниже"
+    
+    await state.update_data(price_target=target_val, price_dir=direction)
+    
+    builder = InlineKeyboardBuilder()
+    for tf_key in ["1h", "4h", "1d", "7d"]:
+        builder.add(InlineKeyboardButton(text=f"⏱ {VOL_TF_NAMES[tf_key]}", callback_data=f"c_voltf:{tf_key}"))
+    builder.adjust(2, 2)
+
     
     await callback.message.answer(
-            f"✅ <b>Алерт по процентам установлен!</b>\n\n"
-            f"🪙 Монета: <code>{coin}</code>\n"
-            f"🎯 Условие: я пришлю уведомление, когда {dir_text} {val_str}.",
-            reply_markup=main_kb
-        )
-    await callback.message.answer("❌ Произошла ошибка при сохранении в базу.", reply_markup=main_kb)
+        f"✅ Условие по цене сохранено: цена <b>{dir_text} {target_val:,.2f} $</b>\n\n"
+        "<b>Шаг 5: Теперь настроим второе условие — объем.</b>\n"
+        "За какой период сравнивать объем торгов?",
+        reply_markup=builder.as_markup()
+    )
+    
+    await state.set_state(SmartAlertForm.complex_vol_tf)
     
 @dp.message(SmartAlertForm.complex_price_input)
 async def cmd_input_price(message: types.Message, state: FSMContext):
@@ -616,14 +620,16 @@ async def cmd_input_price(message: types.Message, state: FSMContext):
         )
     
     if is_percent:
-        price = row_price
+        current_pct = row_price  # Человек ввел процент (например, 5 или -3)
         target_val = data['base_price'] * (1 + current_pct / 100)
+        price = target_val
     else:
         price = row_price
+        target_val = row_price   # Человек ввел точную цену — она и есть target_val!
         current_pct = ((target_val - data['base_price']) / data['base_price']) * 100
     
     direction = "UP" if price > data['base_price'] else "DOWN"
-    await state.update_data(price_target=price, price_dir=direction, current_pct=current_pct)
+    await state.update_data(price_target=price, price_dir=direction)
 
     dir_text = "вырастет выше" if direction == "UP" else "упадет ниже"
 
@@ -957,7 +963,7 @@ async def simple_unit_percent_chosen(callback: types.CallbackQuery, state: FSMCo
     await state.update_data(current_pct=0.0) # Стартуем с 0%
     data = await state.get_data()
     
-    text, kb = get_percent_menu_text_and_kb(data)
+    text, kb = get_percent_menu_text_and_kb_complex(data, metric='price')
     await callback.message.edit_text(text, reply_markup=kb)
     await state.set_state(SmartAlertForm.simple_percent_menu)
 
@@ -972,7 +978,7 @@ async def s_percent_add_handler(callback: types.CallbackQuery, state: FSMContext
     await state.update_data(current_pct=new_pct)
     data['current_pct'] = new_pct
     
-    text, kb = get_percent_menu_text_and_kb(data)
+    text, kb = get_percent_menu_text_and_kb_complex(data, metric='price')
     try:
         await callback.message.edit_text(text, reply_markup=kb)
     except Exception:
@@ -985,7 +991,7 @@ async def percent_reset_handler(callback: types.CallbackQuery, state: FSMContext
     data = await state.get_data()
     data['current_pct'] = 0.0
     
-    text, kb = get_percent_menu_text_and_kb(data)
+    text, kb = get_percent_menu_text_and_kb_complex(data, metric='price')
     try:
         await callback.message.edit_text(text, reply_markup=kb)
     except Exception:
