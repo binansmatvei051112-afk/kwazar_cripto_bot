@@ -17,7 +17,7 @@ from database_and_api import (
     init_db, fetch_binance_prices, DB_NAME, 
     fetch_binance_24h_stats, get_chart_image, get_all_users, add_users,
     update_crypto_cache, get_cached_prices, get_cached_stats, add_smart_alert,
-    fetch_all_volumes_tf, get_symbol_volume
+    fetch_all_volumes_tf, get_symbol_volume, get_symbol_price_change
 )
 from dotenv import load_dotenv 
 
