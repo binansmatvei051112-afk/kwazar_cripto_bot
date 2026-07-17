@@ -272,7 +272,6 @@ async def fetch_all_volumes_tf(window_size: str = "1d", quote_asset: str = "USDT
                         item['symbol']: {
                             'quote_volume': float(item['quoteVolume']),
                             'price_change_percent': float(item.get('priceChangePercent', 0.0)),
-                            'price': float(item.get('lastPrice', 0.0))
                         }
                         for item in data if item['symbol'].endswith(quote_asset)
                     }
@@ -310,7 +309,7 @@ async def get_symbol_price_change(symbol: str, window_size: str = "1d") -> float
         stats = await fetch_all_volumes_tf(window_size=window_size, symbols=[symbol])
         data = stats.get(symbol)
 
-    return (data['price_change_percent']:data['price']) if data else None
+    return (data['price_change_percent'], data['price']) if data else None
 
 async def main():
     await init_db()
