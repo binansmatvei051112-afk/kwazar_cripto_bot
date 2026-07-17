@@ -17,8 +17,9 @@ from database_and_api import (
     init_db, fetch_binance_prices, DB_NAME, 
     fetch_binance_24h_stats, get_chart_image, get_all_users, add_users,
     update_crypto_cache, get_cached_prices, get_cached_stats, add_smart_alert,
-    fetch_all_volumes_tf, get_symbol_volume, get_symbol_price_change
+    fetch_all_volumes_tf, get_symbol_volume
 )
+from database_and_api import get_symbol_price_change
 from dotenv import load_dotenv 
 
 load_dotenv()
@@ -92,6 +93,9 @@ class SmartAlertForm(StatesGroup):
 class ChartStates(StatesGroup):
     choosing_coin = State()
     choosing_tf = State()
+    
+class Cointf(StatesGroup):
+    choosing_tf_coin = State()
     
 class IsAdmin(BaseFilter):
     def __init__(self, admin_id:int):
@@ -311,37 +315,41 @@ async def cancel_handlane(message: types.Message, state: FSMContext):
 @dp.message(F.text == "🔍 Курсы валют")
 async def menu_prices(message: types.Message):
     
-    msg = await message.answer("⏳ <i>Запрашиваю актуальные цены из базы данных...</i>")
+    builder = InlineKeyboardBuilder()
+    builder.add(InlineKeyboardButton(text="⏱ 1 час", callback_data="show_price:1h"))
+    builder.add(InlineKeyboardButton(text="🕒 4 часа", callback_data="show_price:4h"))
+    builder.add(InlineKeyboardButton(text="📆 24 часа", callback_data="show_price:1d"))
+    builder.add(InlineKeyboardButton(text="📈 7 дней", callback_data="show_price:7d"))
+    builder.adjust(2, 2)
     
-    prise = await get_cached_prices()
-    
-    text = (
-        "<b>📊 ТОП-10 популярных криптовалют</b>\n"
-        "───────────────────\n"
+    await message.answer(
+        "📊 <b>Выбери период для просмотра цены монеты:</b>",
+        reply_markup=builder.as_markup()
     )
     
+@dp.callback_query(F.data.startswith("show_price:"))
+async def price_cmd_tf(callback: types.CallbackQuery):
+    tf_price = callback.data.split(":")[1]
+    tf_names = {"1h": "1 час", "4h": "4 часа", "1d": "24 часа", "7d": "7 дней"}
+    callback.answer()
     
+    await callback.message.edit_text(f"⏳ Запрашиваю статистику за <b>{tf_names.get(tf_price)}</b>...")
+    
+    text = f"📊 <b>Объемы торгов за {tf_names.get(tf_price)} (Топ-10):</b>\n\n"
     for coin in POPULAR_COINS:
-        current_coin = f"{coin}USDT"
-        current_prise = prise.get(current_coin, "Н/Д")
+        symbol = f"{coin}USDT"
+        change = await get_symbol_price_change(symbol, tf_price)
+        if not change:
+            text = "Ошибка"
+        text += f"🔹 <b>{coin}</b>: {change}\n"
         
-        if current_prise != "Н/Д":
+    builder = InlineKeyboardBuilder()
+    for t_key, t_name in [("1h", "1ч"), ("4h", "4ч"), ("1d", "24ч"), ("7d", "7д")]:
+        if t_key != tf_price:
+            builder.add(InlineKeyboardButton(text=f"⏱ {t_name}", callback_data=f"show_price:{t_key}"))
+    builder.adjust(3)
             
-            try:
-                formatted_price = f"{float(current_prise):,}".replace(",", " ")
-            except ValueError:
-                formatted_price = current_prise
-                
-            text += f"🔹 <b>{coin:<5}</b> <code>$ {formatted_price}</code>\n"
-            
-    text += (
-        "───────────────────\n"
-        "💡 <i>Не нашли нужную монету?</i>\n"
-        "Используйте команду:\n"
-        "👉 <code>/price НАЗВАНИЕ</code>"
-    )
-    
-    await msg.edit_text(text)
+    await callback.message.edit_text(text, reply_markup=builder.as_markup())
 
 @dp.message(Command("price"))
 async def cmd_price(message:types.Message):

@@ -164,12 +164,18 @@ async def get_cached_prices() -> dict:
             rows = await cursor.fetchall()
             return {row[0]: row[1] for row in rows}
     
-async def get_cached_stats() -> dict:
+async def get_cached_stats(get_price=False) -> dict:
     
     async with aiosqlite.connect(DB_NAME) as db:
-        async with db.execute("SELECT coin_symbol, quote_volume, price_change_percent FROM crypto_cache") as cursor:
-            rows = await cursor.fetchall()
-            return {row[0]: {'quote_volume': row[1], 'price_change_percent': row[2]} for row in rows}
+        if not get_price:
+            async with db.execute("SELECT coin_symbol, quote_volume, price_change_percent FROM crypto_cache") as cursor:
+                rows = await cursor.fetchall()
+                return {row[0]: {'quote_volume': row[1], 'price_change_percent': row[2]} for row in rows}
+        else:
+            async with db.execute("SELECT coin_symbol, quote_volume, price_change_percent, price FROM crypto_cache") as cursor:
+                rows = await cursor.fetchall()
+                return {row[0]: {'quote_volume': row[1], 'price_change_percent': row[2], 'price' : row[3]} for row in rows}
+        
 
 BINANCE_24HR_URL = "https://api.binance.com/api/v3/ticker/24hr"
 
@@ -265,7 +271,8 @@ async def fetch_all_volumes_tf(window_size: str = "1d", quote_asset: str = "USDT
                     return {
                         item['symbol']: {
                             'quote_volume': float(item['quoteVolume']),
-                            'price_change_percent': float(item.get('priceChangePercent', 0.0))
+                            'price_change_percent': float(item.get('priceChangePercent', 0.0)),
+                            'price': float(item.get('price', 0.0))
                         }
                         for item in data if item['symbol'].endswith(quote_asset)
                     }
@@ -290,6 +297,20 @@ async def get_symbol_volume(symbol: str, window_size: str = "1d") -> float | Non
         data = stats.get(symbol)
 
     return data['quote_volume'] if data else None
+
+async def get_symbol_price_change(symbol: str, window_size: str = "1d") -> float | None:
+    """
+    Процент изменения цены монеты за указанный период.
+    Для '1d' берет из локального кэша, для остальных периодов — живой запрос.
+    """
+    if window_size == "1d":
+        cached = await get_cached_stats(get_price=True)
+        data = cached.get(symbol)
+    else:
+        stats = await fetch_all_volumes_tf(window_size=window_size, symbols=[symbol])
+        data = stats.get(symbol)
+
+    return {data['price_change_percent']:data['price']} if data else None
 
 async def main():
     await init_db()
