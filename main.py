@@ -335,13 +335,14 @@ async def price_cmd_tf(callback: types.CallbackQuery):
     
     await callback.message.edit_text(f"⏳ Запрашиваю статистику за <b>{tf_names.get(tf_price)}</b>...")
     
-    text = f"📊 <b>Объемы торгов за {tf_names.get(tf_price)} (Топ-10):</b>\n\n"
+    text = f"📊 <b>Цена и ее период за {tf_names.get(tf_price)} (Топ-10):</b>\n\n"
     for coin in POPULAR_COINS:
         symbol = f"{coin}USDT"
-        change = await get_symbol_price_change(symbol, tf_price)
-        if not change:
-            text = "Ошибка"
-        text += f"🔹 <b>{coin}</b>: {change}\n"
+        change_procent, price = await get_symbol_price_change(symbol, tf_price)
+        if not(change_procent or price):
+            text += f"<b>Цена или объем монеты {coin} недоступны - попробуйте позже</b>"
+        sign = "🟢 +" if change_procent > 0 else "🔴 "
+        text += f"🔹 <b>{coin}</b>: {price} (<i>{sign}{change_procent:.2f}%</i>)\n"
         
     builder = InlineKeyboardBuilder()
     for t_key, t_name in [("1h", "1ч"), ("4h", "4ч"), ("1d", "24ч"), ("7d", "7д")]:
