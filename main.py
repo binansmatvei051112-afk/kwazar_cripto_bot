@@ -357,7 +357,7 @@ async def price_cmd_tf(callback: types.CallbackQuery, state: FSMContext):
         sign = "🟢 +" if change_procent > 0 else "🔴 "
         text += f"🔹 <b>{coin}</b>: {price} (<i>{sign}{change_procent:.2f}%</i>)\n"
     
-    text += "Если хотите узнать цену и процент изменения другой монеты \n Напишите <code>/price <Монета></code>"
+    text += "Если хотите узнать цену и процент изменения другой монеты \n Напишите <code>/price &lt;Монета&gt;</code>"
         
     builder = InlineKeyboardBuilder()
     for t_key, t_name in [("1h", "1ч"), ("4h", "4ч"), ("1d", "24ч"), ("7d", "7д")]:
