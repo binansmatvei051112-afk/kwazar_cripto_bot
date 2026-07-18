@@ -333,18 +333,27 @@ async def price_cmd_tf(callback: types.CallbackQuery, state: FSMContext):
     await state.clear()
     tf_price = callback.data.split(":")[1]
     tf_names = {"1h": "1 час", "4h": "4 часа", "1d": "24 часа", "7d": "7 дней"}
-    callback.answer()
+    await callback.answer()
     
     await callback.message.edit_text(f"⏳ Запрашиваю статистику за <b>{tf_names.get(tf_price)}</b>...")
     
+    symbols = [f"{c}USDT" for c in POPULAR_COINS]
+
+    if tf_price == "1d":
+        stats = await get_cached_stats(get_price=True)
+    else:
+        stats = await fetch_all_volumes_tf(window_size=tf_price, symbols=symbols)
+
+    all_price = await get_cached_prices()
+
     text = f"📊 <b>Цена и ее период за {tf_names.get(tf_price)} (Топ-10):</b>\n\n"
     for coin in POPULAR_COINS:
-        all_price = await get_cached_prices()
         symbol = f"{coin}USDT"
         price = all_price.get(symbol)
-        change_procent = await get_symbol_price_change(symbol, tf_price)
-        if not(change_procent):
-            text += f"<b>Цена или объем монеты {coin} недоступны - попробуйте позже</b>"
+        change_procent = stats.get(symbol, {}).get('price_change_percent')
+        if change_procent is None:
+            text += f"<b>Цена или объем монеты {coin} недоступны — попробуйте позже</b>\n"
+            continue
         sign = "🟢 +" if change_procent > 0 else "🔴 "
         text += f"🔹 <b>{coin}</b>: {price} (<i>{sign}{change_procent:.2f}%</i>)\n"
     
@@ -405,10 +414,10 @@ async def cmd_price(callback: types.CallbackQuery, state: FSMContext):
         current_prise = prise.get(coin, None)
         change_procent = await get_symbol_price_change(coin, price_tf)
         if not(change_procent):
-            text += f"<b>Цена или объем монеты {coin} недоступны - попробуйте позже</b>"
+            return await callback.message.edit_text(f"<b>Цена или объем монеты {coin} недоступны - попробуйте позже</b>")
         sign = "🟢 +" if change_procent > 0 else "🔴 "
         if current_prise != None:
-            return await callback.message.edit_text(f"<i>📊 Монета {coin} стоит </i><code>{current_prise} $</code>\n", reply_markup=main_kb)
+            return await callback.message.edit_text(f"<i>📊 Монета {coin} стоит </i><code>{current_prise} $({change_procent} {sign})</code>\n", reply_markup=main_kb)
     
     return await callback.message.edit_text(
         f"<b>❌ Монета {coins[0]} не найдена</b>\n"
