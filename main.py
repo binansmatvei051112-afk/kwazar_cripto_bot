@@ -386,7 +386,7 @@ async def menu_prices_coin_cmd(message: types.Message, state:FSMContext):
     coins = [coin + "USDT" for coin in raw_coins]
     
     await state.update_data(coins=coins)
-    await message.answer(f"Отлично ваша монета:{raw_coin}", reply_markup=cancel_kb)
+    await message.answer(f"<b>Отлично ваша монета:{raw_coin}</b>", reply_markup=cancel_kb)
     
     builder = InlineKeyboardBuilder()
     builder.add(InlineKeyboardButton(text="⏱ 1 час", callback_data="show_only_one_price:1h"))
@@ -407,22 +407,43 @@ async def cmd_price(callback: types.CallbackQuery, state: FSMContext):
     data = await state.get_data()
     coins = data['coins']
     await callback.answer()
-    
+
     prise = await get_cached_prices()
-    
-    for coin in coins:
-        current_prise = prise.get(coin, None)
-        change_procent = await get_symbol_price_change(coin, price_tf)
-        if not(change_procent):
-            return await callback.message.edit_text(f"<b>Цена или объем монеты {coin} недоступны - попробуйте позже</b>")
-        sign = "🟢 +" if change_procent > 0 else "🔴 "
-        if current_prise != None:
-            return await callback.message.edit_text(f"<i>📊 Монета {coin} стоит </i><code>{current_prise} $({change_procent} {sign})</code>\n", reply_markup=main_kb)
-    
-    return await callback.message.edit_text(
-        f"<b>❌ Монета {coins[0]} не найдена</b>\n"
-        f"───────────────────\n"
-        f"Проверьте правильность написания тикера или попробуйте позже.", reply_markup=cancel_kb)
+
+    coin, current_prise = None, None
+    for c in coins:
+        cp = prise.get(c)
+        if cp is not None:
+            coin, current_prise = c, cp
+            break
+
+    if coin is None:
+        return await callback.message.edit_text(
+            f"<b>❌ Монета {coins[0]} не найдена</b>\n"
+            f"───────────────────\n"
+            f"Проверьте правильность написания тикера или попробуйте позже."
+        )
+
+    change_procent = await get_symbol_price_change(coin, price_tf)
+    if change_procent is None:
+        return await callback.message.edit_text(f"<b>Данные по {coin} временно недоступны — попробуй позже</b>")
+
+    tf_names = {"1h": "1 час", "4h": "4 часа", "1d": "24 часа", "7d": "7 дней"}
+    sign_emoji = "🟢" if change_procent >= 0 else "🔴"
+    sign_str = f"+{change_procent:.2f}%" if change_procent >= 0 else f"{change_procent:.2f}%"
+
+    builder = InlineKeyboardBuilder()
+    for t_key, t_name in [("1h", "1ч"), ("4h", "4ч"), ("1d", "24ч"), ("7d", "7д")]:
+        if t_key != price_tf:
+            builder.add(InlineKeyboardButton(text=f"⏱ {t_name}", callback_data=f"show_only_one_price:{t_key}"))
+    builder.adjust(3)
+
+    await callback.message.edit_text(
+        f"📊 <b>{coin}</b>\n\n"
+        f"💰 Цена: <code>{current_prise} $</code>\n"
+        f"{sign_emoji} Изменение за {tf_names[price_tf]}: <b>{sign_str}</b>",
+        reply_markup=builder.as_markup()
+    )
     
 @dp.message(F.text == "Создать алерт")
 async def start_alert_creation(message: types.Message, state: FSMContext):
