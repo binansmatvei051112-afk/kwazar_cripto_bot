@@ -998,7 +998,7 @@ async def price_mode_rate_chosen(callback: types.CallbackQuery, state: FSMContex
 async def simple_price_rate_tf_cmd(callback: types.CallbackQuery, state: FSMContext):
     await callback.answer()
     tf_price = callback.data.split(":")[1]
-    await state.update_data(tf_price=tf_price)    
+    await state.update_data(tf_price=tf_price)
     
     builder = InlineKeyboardBuilder()
     builder.add(InlineKeyboardButton("Деньги", callback_data="dsdsd"))
