@@ -52,7 +52,7 @@ main_kb = ReplyKeyboardMarkup(
     keyboard=[
         [KeyboardButton(text="Создать алерт")],
         [KeyboardButton(text="Мои алерты"), KeyboardButton(text="Показать график монеты")],
-        [KeyboardButton(text="🔍 Курсы валют"), KeyboardButton(text="📊 Объемы ")]
+        [KeyboardButton(text="🔍 Курсы валют"), KeyboardButton(text="📊 Объемы")]
     ],
     resize_keyboard=True,
     is_persistent=True
@@ -71,6 +71,10 @@ class SmartAlertForm(StatesGroup):
     
     
     simple_metric = State()
+    simple_price_mode = State()      # уровень vs скорость
+    simple_price_rate_tf = State()   # период для скорости
+    simple_price_rate_unit = State() # деньги/проценты для скорости
+    simple_price_rate_input = State()
     simple_vol_tf = State()
     simple_unit = State()
     simple_value_input = State()   
@@ -950,7 +954,55 @@ async def simple_metric_chosen(callback: types.CallbackQuery, state: FSMContext)
         await state.set_state(SmartAlertForm.simple_vol_tf)
         return
 
+    builder = InlineKeyboardBuilder()
+    builder.add(InlineKeyboardButton(text="🎯 Уровень цены", callback_data="price_mode:level"))
+    builder.add(InlineKeyboardButton(text="⚡ Скорость изменения", callback_data="price_mode:rate"))
+    builder.adjust(1)
+
+    await callback.message.edit_text(
+        "📊 Отслеживание по: <b>Цене</b>\n\n"
+        "<b>Шаг 3.5: Что именно отслеживаем?</b>\n"
+        "🎯 <i>Уровень цены</i> — сработает, когда цена пересечёт заданную отметку "
+        "(например, $65000), независимо от времени.\n"
+        "⚡ <i>Скорость изменения</i> — сработает, если цена изменится на X% (или $) "
+        "именно за выбранный период (например, +5% за 4 часа).",
+        reply_markup=builder.as_markup()
+    )
+    await state.set_state(SmartAlertForm.simple_price_mode)
+    
+@dp.callback_query(SmartAlertForm.simple_price_mode, F.data == "price_mode:level")
+async def price_mode_level_chosen(callback: types.CallbackQuery, state: FSMContext):
+    await callback.answer()
+    
     await ask_simple_unit(callback, state)
+    
+@dp.callback_query(SmartAlertForm.simple_price_mode, F.data == "price_mode:rate")
+async def price_mode_rate_chosen(callback: types.CallbackQuery, state: FSMContext):
+    await callback.answer()
+
+    builder = InlineKeyboardBuilder()
+    for tf_key in ["1h", "4h", "1d", "7d"]:
+        builder.add(InlineKeyboardButton(text=f"⏱ {VOL_TF_NAMES[tf_key]}", callback_data=f"price_rate_tf:{tf_key}"))
+    builder.adjust(2, 2)
+
+    await callback.message.edit_text(
+        "⚡ <b>Скорость изменения цены</b>\n\n"
+        "<b>За какой период отслеживать изменение?</b>\n"
+        "<i>Например, «1 час» — алерт сработает, если цена изменится на заданную "
+        "величину именно за последний час, а не с момента создания алерта.</i>",
+        reply_markup=builder.as_markup()
+    )
+    await state.set_state(SmartAlertForm.simple_price_rate_tf)
+    
+@dp.callback_query(SmartAlertForm.simple_price_rate_tf, F.data.startswith("price_rate_tf:"))
+async def simple_price_rate_tf_cmd(callback: types.CallbackQuery, state: FSMContext):
+    await callback.answer()
+    tf_price = callback.data.split(":")[1]
+    await state.update_data(tf_price=tf_price)    
+    
+    builder = InlineKeyboardBuilder()
+    builder.add(InlineKeyboardButton("Деньги", callback_data="dsdsd"))
+
 
 async def ask_simple_unit(callback: types.CallbackQuery, state: FSMContext):
     

@@ -312,11 +312,7 @@ async def get_symbol_price_change(symbol: str, window_size: str = "1d") -> float
 
     return (data['price_change_percent']) if data else None
 
-async def get_symbol_price_change(symbol: str, window_size: str = "1d") -> float | None:
-    """
-    Процент изменения цены монеты за указанный период.
-    Для '1d' берет из локального кэша, для остальных периодов — живой запрос.
-    """
+async def get_symbol_price_delta(symbol: str, window_size: str = "1d") -> float | None:
     if window_size == "1d":
         cached = await get_cached_stats(get_price=True)
         data = cached.get(symbol)
