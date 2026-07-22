@@ -36,7 +36,9 @@ async def init_db():
                 vol_check BOOLEAN DEFAULT 0,    -- 1 если проверяем объем, 0 если нет
                 vol_target REAL DEFAULT NULL,   -- Целевой объем (в $)
                 vol_dir TEXT DEFAULT NULL,       -- 'UP' (выше) или 'DOWN' (ниже)
-                vol_tf TEXT DEFAULT '1d'
+                vol_tf TEXT DEFAULT '1d',
+                price_tf TEXT DEFAULT NULL,
+                price_rate_unit TEXT DEFAULT NULL
             )
         """)
         await db.execute("""
@@ -50,6 +52,7 @@ async def init_db():
                 price REAL,
                 quote_volume REAL,
                 price_change_percent REAL,
+                price_delta REAL,
                 last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )
         """)
@@ -164,17 +167,25 @@ async def get_cached_prices() -> dict:
             rows = await cursor.fetchall()
             return {row[0]: row[1] for row in rows}
     
-async def get_cached_stats(get_price=False) -> dict:
+async def get_cached_stats(get_price=False, get_delta_price=False) -> dict:
     
     async with aiosqlite.connect(DB_NAME) as db:
-        if not get_price:
+        if not get_price and not get_delta_price:
             async with db.execute("SELECT coin_symbol, quote_volume, price_change_percent FROM crypto_cache") as cursor:
                 rows = await cursor.fetchall()
                 return {row[0]: {'quote_volume': row[1], 'price_change_percent': row[2]} for row in rows}
-        else:
+        elif get_price and not get_delta_price:
             async with db.execute("SELECT coin_symbol, quote_volume, price_change_percent, price FROM crypto_cache") as cursor:
                 rows = await cursor.fetchall()
                 return {row[0]: {'quote_volume': row[1], 'price_change_percent': row[2], 'price' : row[3]} for row in rows}
+        elif not get_price and get_delta_price:
+            async with db.execute("SELECT coin_symbol, quote_volume, price_change_percent, price_delta FROM crypto_cache") as cursor:
+                rows = await cursor.fetchall()
+                return {row[0]: {'quote_volume': row[1], 'price_change_percent': row[2], 'price_delta': row[3]} for row in rows}
+        else:
+            async with db.execute("SELECT coin_symbol, quote_volume, price_change_percent, price, price_delta FROM crypto_cache") as cursor:
+                rows = await cursor.fetchall()
+                return {row[0]: {'quote_volume': row[1], 'price_change_percent': row[2], 'price' : row[3], 'price_delta': row[4]} for row in rows}
         
 
 BINANCE_24HR_URL = "https://api.binance.com/api/v3/ticker/24hr"
@@ -191,7 +202,8 @@ async def fetch_binance_24h_stats(quote_asset: str = "USDT") -> dict:
                         if item['symbol'].endswith(quote_asset):
                             stats[item['symbol']] = {
                                 'quote_volume': float(item['quoteVolume']), 
-                                'price_change_percent': float(item['priceChangePercent'])
+                                'price_change_percent': float(item['priceChangePercent']),
+                                'price_delta': float(item.get('priceChange', 0.0)),
                             }
                     return stats
                 else:
@@ -209,15 +221,17 @@ async def update_crypto_cache(prices: dict, stats: dict):
         for symbol, price in prices.items():
             vol = stats.get(symbol, {}).get('quote_volume', 0.0)
             change = stats.get(symbol, {}).get('price_change_percent', 0.0)
-            data_to_insert.append((symbol, price, vol, change))
+            price_delta = stats.get(symbol, {}).get('price_delta', 0.0)
+            data_to_insert.append((symbol, price, vol, change, price_delta))
 
         await db.executemany("""
-            INSERT INTO crypto_cache (coin_symbol, price, quote_volume, price_change_percent, last_updated)
-            VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP)
+            INSERT INTO crypto_cache (coin_symbol, price, quote_volume, price_change_percent, price_delta, last_updated)
+            VALUES (?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
             ON CONFLICT(coin_symbol) DO UPDATE SET
                 price=excluded.price,
                 quote_volume=excluded.quote_volume,
                 price_change_percent=excluded.price_change_percent,
+                price_delta=excluded.price_delta,
                 last_updated=CURRENT_TIMESTAMP
         """, data_to_insert)
         await db.commit()
@@ -229,7 +243,7 @@ async def add_smart_alert(
     operator: str = None,
     price_check: int = 0, price_target: float = None, price_dir: str = None,
     vol_check: int = 0, vol_target: float = None, vol_dir: str = None,
-    vol_tf: str = "1d"
+    vol_tf: str = "1d", price_tf: str = None, price_rate_unit: str = None,
 ) -> bool:
     
     try:
@@ -238,9 +252,10 @@ async def add_smart_alert(
                 INSERT INTO smart_alerts (
                     user_id, coin_symbol, alert_type, operator,
                     price_check, price_target, price_dir,
-                    vol_check, vol_target, vol_dir, vol_tf
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            """, (user_id, coin, alert_type, operator, price_check, price_target, price_dir, vol_check, vol_target, vol_dir, vol_tf))
+                    vol_check, vol_target, vol_dir, vol_tf,
+                    price_tf, price_rate_unit
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (user_id, coin, alert_type, operator, price_check, price_target, price_dir, vol_check, vol_target, vol_dir, vol_tf, price_tf, price_rate_unit,))
             await db.commit()
             return True
     except Exception as e:
@@ -272,7 +287,7 @@ async def fetch_all_volumes_tf(window_size: str = "1d", quote_asset: str = "USDT
                         item['symbol']: {
                             'quote_volume': float(item['quoteVolume']),
                             'price_change_percent': float(item.get('priceChangePercent', 0.0)),
-                            'price_change': float(item.get('priceChange', 0.0)),
+                            'price_delta': float(item.get('priceChange', 0.0)),
                         }
                         for item in data if item['symbol'].endswith(quote_asset)
                     }
@@ -312,15 +327,26 @@ async def get_symbol_price_change(symbol: str, window_size: str = "1d") -> float
 
     return (data['price_change_percent']) if data else None
 
-async def get_symbol_price_delta(symbol: str, window_size: str = "1d") -> float | None:
+async def get_symbol_price_delta(symbol: str, window_size: str = "1d", quote_asset: str = "USDT") -> float | None:
+    # 1. Формируем полный тикер для Binance (например, BTC + USDT = BTCUSDT)
+    full_symbol = symbol if symbol.endswith(quote_asset) else f"{symbol}{quote_asset}"
+    
     if window_size == "1d":
-        cached = await get_cached_stats(get_price=True)
-        data = cached.get(symbol)
+        cached = await get_cached_stats(get_price=True, get_delta_price=True)
+        # В кэше у вас ключи могут быть как BTC, так и BTCUSDT. Проверим оба варианта:
+        data = cached.get(symbol) or cached.get(full_symbol)
     else:
-        stats = await fetch_all_volumes_tf(window_size=window_size, symbols=[symbol])
-        data = stats.get(symbol)
+        # Передаем в функцию fetch_all_volumes_tf правильный список с полным тикером
+        stats = await fetch_all_volumes_tf(window_size=window_size, symbols=[full_symbol], quote_asset=quote_asset)
+        data = stats.get(full_symbol)
 
-    return (data['price_change']) if data else None
+    # 2. Безопасная проверка: если данных вообще нет, возвращаем 0.0 или None
+    if not data:
+        logger.warning(f"⚠️ Не удалось найти данные изменения цены для {full_symbol} ({window_size})")
+        return 0.0 
+
+    # 3. Извлекаем значение (теперь оно гарантированно там будет, если data существует)
+    return data.get('price_delta', None)
 
 async def main():
     await init_db()
