@@ -205,7 +205,8 @@ async def check_alerts_loop():
                                             
                                             # Для текста красиво посчитаем еще и процент, раз ты хотел его вывести:
                                             # Избегаем деления на ноль, если вдруг в базе кривая базовая цена
-                                            base_p = alert.get("price_base", curr_price) # или откуда ты берешь точку отсчета
+                                            base_p = curr_price - curr_delta if curr_delta else curr_price
+                                            calc_pct = (curr_delta / base_p) * 100 if base_p else 0.0 # или откуда ты берешь точку отсчета
                                             calc_pct = (curr_delta / base_p) * 100 if base_p else 0.0
                                             sign = "+" if curr_delta >= 0 else ""
                                             
@@ -1069,10 +1070,17 @@ async def simple_price_rate_unit_handler_percent(callback: types.CallbackQuery, 
     await callback.answer()
     await state.update_data(current_pct=0.0)
     data = await state.get_data()
+    tf_names = {"1h": "1 час", "4h": "4 часа", "1d": "24 часа", "7d": "7 дней"}
     
-    text = f"""
-    НАПИШИ ТЕКСТ ЗАВТРА НЕ ЗАБУДЬ !!!
-    """
+    text = (
+        f"⚡️ <b>Настройка скорости изменения цены</b>\n\n"
+        f"🪙 Монета: <b>{data['coin']}</b>\n"
+        f"⏱ Период: <b>{tf_names.get((data.get('tf_price', '1d')), (data.get('tf_price', '1d')))}</b>\n"
+        f"📍 Текущая цена: <code>{data['base_price']:,.2f} $</code>\n\n"
+        f"🎛 Изменение за период: <b>{"+" if (data.get('current_pct', 0.0)) > 0 else ""}{data.get('current_pct', 0.0):.1f}%</b>\n"
+        f"🎯 Цель (ориентир): <code>{(data['base_price'] * (100 + (data.get('current_pct', 0.0)) / 100)):,.2f} $</code>\n\n"
+        f"<i>Укажи, на сколько процентов должна измениться цена за {tf_names.get((data.get('tf_price', '1d')), (data.get('tf_price', '1d')))}:</i>"
+    )
     
     kb = get_percent_menu_text_and_kb(data)
     await callback.message.edit_text(text, reply_markup=kb)
@@ -1083,13 +1091,20 @@ async def s_percent_add_handler_rate(callback: types.CallbackQuery, state: FSMCo
     delta = float(callback.data.split(":")[1])
     data = await state.get_data()
     new_pct = round(data.get('current_pct', 0.0) + delta, 1)
+    tf_names = {"1h": "1 час", "4h": "4 часа", "1d": "24 часа", "7d": "7 дней"}
     
     await state.update_data(current_pct=new_pct)
     data['current_pct'] = new_pct
     
-    text = f"""
-    НАПИШИ ТЕКСТ ЗАВТРА НЕ ЗАБУДЬ !!!
-    """
+    text = (
+        f"⚡️ <b>Настройка скорости изменения цены</b>\n\n"
+        f"🪙 Монета: <b>{data['coin']}</b>\n"
+        f"⏱ Период: <b>{tf_names.get((data.get('tf_price', '1d')), (data.get('tf_price', '1d')))}</b>\n"
+        f"📍 Текущая цена: <code>{data['base_price']:,.2f} $</code>\n\n"
+        f"🎛 Изменение за период: <b>{"+" if (new_pct) > 0 else ""}{new_pct:.1f}%</b>\n"
+        f"🎯 Цель (ориентир): <code>{(data['base_price'] * (100 + (new_pct) / 100)):,.2f} $</code>\n\n"
+        f"<i>Укажи, на сколько процентов должна измениться цена за {tf_names.get((data.get('tf_price', '1d')), (data.get('tf_price', '1d')))}:</i>"
+    )
     
     kb = get_percent_menu_text_and_kb(data)
     try:
@@ -1102,11 +1117,18 @@ async def s_percent_add_handler_rate(callback: types.CallbackQuery, state: FSMCo
 async def percent_reset_handler_rate(callback: types.CallbackQuery, state: FSMContext):
     await state.update_data(current_pct=0.0)
     data = await state.get_data()
+    tf_names = {"1h": "1 час", "4h": "4 часа", "1d": "24 часа", "7d": "7 дней"}
     data['current_pct'] = 0.0
     
-    text = f"""
-    НАПИШИ ТЕКСТ ЗАВТРА НЕ ЗАБУДЬ !!!
-    """
+    text = (
+        f"⚡️ <b>Настройка скорости изменения цены</b>\n\n"
+        f"🪙 Монета: <b>{data['coin']}</b>\n"
+        f"⏱ Период: <b>{tf_names.get((data.get('tf_price', '1d')), (data.get('tf_price', '1d')))}</b>\n"
+        f"📍 Текущая цена: <code>{data['base_price']:,.2f} $</code>\n\n"
+        f"🎛 Изменение за период: <b>0%</b>\n"
+        f"🎯 Цель (ориентир): <code>{(data['base_price'] * (100 + (data.get('current_pct', 0.0)) / 100)):,.2f} $</code>\n\n"
+        f"<i>Укажи, на сколько процентов должна измениться цена за {tf_names.get((data.get('tf_price', '1d')), (data.get('tf_price', '1d')))}:</i>"
+    )
     
     kb = get_percent_menu_text_and_kb(data)
     try:
@@ -1148,7 +1170,7 @@ async def simple_price_rate_unit_handler_money(callback: types.CallbackQuery, st
         f"📍 Текущее значение: <code>{base_val}</code>\n"
         f"📈 Текущее изменение цена за период <b>{tf_names[tf_price]}</b> равно <i>{'+' + str(data_delta)if data_delta >= 0 else  str(data_delta) }</i>\n\n"
         f"✏️ <b>Напиши в чат {name}:</b>\n"
-        f"<i>(Пример числа: <code>{round(data['base_price'] * 0.9, 0)}$ или {round(data['base_price'] * 1.1, 0)}$</code>)</i>"
+        f"<i>(Пример числа: <code>-{(data['base_price'] - round(data['base_price'] * 0.9, 0)):.1f}$ или {(round(data['base_price'] * 1.1, 0) - data['base_price']):.1f}$</code> от {data['base_price']}$)</i>"
     )
     await state.set_state(SmartAlertForm.simple_price_rate_input)
     
@@ -1161,7 +1183,6 @@ async def simple_price_rate_input_handler(message: types.Message, state: FSMCont
     is_percent = True if rate_unit == "percent" else False
     coin = data["coin"]
     tf_price = data['tf_price']
-    data_delta = await get_symbol_price_delta(coin, tf_price)
     
     try:
         raw_val = float(message.text.replace(",", ".").replace(" ", ""))
@@ -1175,31 +1196,44 @@ async def simple_price_rate_input_handler(message: types.Message, state: FSMCont
             return await message.answer("❌ Ошибка! Введи положительное число без букв:")
         
     if is_percent:
-        target_val = (data['base_price'] * (1 + raw_val / 100)) + data['base_price']
         current_pct = raw_val
+        target_val = raw_val                          # а вот это идёт в БД
     else:
-        target_val = raw_val + data['base_price']
-        current_pct = ((raw_val/data['base_price']) * 100)
+        current_pct = (raw_val/data['base_price']*100)
+        target_val = raw_val  
+        
 
-
-    direction = "UP" if target_val > data['base_price'] else "DOWN"
+    if rate_unit == "money":
+        direction = "UP" if target_val > (await get_symbol_price_delta(coin, tf_price)) else "DOWN"
+    else:
+        direction = "UP" if target_val > (await get_symbol_price_change(coin, tf_price)) else "DOWN"
+        
     success = await add_smart_alert(
         user_id=message.chat.id, coin=coin, alert_type='simple',
         price_check=1, price_target=target_val, price_dir=direction,
         price_tf=tf_price, price_rate_unit=rate_unit,
     )
     dir_text = "📈 выростет до" if direction == "UP" else "📉 упадет до"
-    val_str = f"<code>{target_val:,.2f} $</code> ({'+' if current_pct>0 else ''}{current_pct:.1f}%)"
-        
+    val_str = f"<code>{target_val:,.2f} $</code> ({'+' if current_pct>0 else ''}{current_pct:.1f}% от {data['base_price']}"
+    sign = "+" if target_val > 0 else ""    
+    
     await state.clear()
     
     if success:
-        await message.answer(
-            f"✅ <b>Алерт успешно установлен!</b>\n\n"
-            f"🪙 Монета: <code>{coin}</code>\n"
-            f"🎯 Условие: я пришлю уведомление, когда монета {dir_text} {val_str} за период {price_tf_names[tf_price]}.",
-            reply_markup=main_kb
-        )
+        if rate_unit == "money":
+            await message.answer(
+                f"✅ <b>Алерт успешно установлен!</b>\n\n"
+                f"🪙 Монета: <code>{coin}</code>\n"
+                f"🎯 Условие: я пришлю уведомление, когда цена изменение монеты {dir_text} {val_str} за период {price_tf_names[tf_price]}).",
+                reply_markup=main_kb
+            )
+        else:
+            await message.answer(
+                f"✅ <b>Алерт успешно установлен!</b>\n\n"
+                f"🪙 Монета: <code>{coin}</code>\n"
+                f"🎯 Условие: я пришлю уведомление, когда процент изменение монеты {dir_text} {sign}{target_val}% за период {price_tf_names[tf_price]}).",
+                reply_markup=main_kb
+            )
     else:
         await message.answer("❌ Произошла ошибка при сохранении в базу. Попробуй еще раз.", reply_markup=main_kb)
 
@@ -1382,22 +1416,34 @@ async def simple_unit_percent_chosen(callback: types.CallbackQuery, state: FSMCo
     await callback.answer()
     await state.update_data(current_pct=0.0)
     data = await state.get_data()
-    tf_name = VOL_TF_NAMES.get(data.get('vol_tf', '1d'), '24 часа')
+    
+    coin = data['coin']
+    metric = data.get('metric', 'price')
+    current_pct = data.get('current_pct', 0.0)
+    
+    # Формируем строки значений до сборки текста
+    if metric == 'price':
+        base_val = data['base_price']
+        target_val = base_val * (1 + current_pct / 100)
+        base_str = f"{base_val:,.2f} $"
+        target_str = f"{target_val:,.2f} $"
+        name = "Цена"
+    else:
+        base_val = data['base_vol']
+        target_val = base_val * (1 + current_pct / 100)
+        base_str = f"{base_val / 1_000_000:,.2f} млн $"
+        target_str = f"{target_val / 1_000_000:,.2f} млн $"
+        tf_name = VOL_TF_NAMES.get(data.get('vol_tf', '1d'), '24 часа')
+        name = f"Объем ({tf_name})"
+        
+    sign = "+" if current_pct > 0 else ""
     
     text = (
         f"📈 <b>Настройка алерта в процентах</b>\n\n"
-        f"🪙 Монета: <b>{data['coin']}</b> ({'Цена' if data['metric'] == 'price' else f'Объем ({tf_name})'})\n"
-        
-        f"📍 Текущее значение: <code>{f'{data['base_price']:,.2f} $' if data['metric'] == 'price' else f'{data['base_vol'] / 1_000_000:,.2f} млн $'}\n\n"
-        
-        f"🎛 Выбранное изменение: <b>{'+' if data.get('current_pct', 0.0) > 0 else ''}{data.get('current_pct', 0.0):.1f}%</b>\n"
-        
-        f"🎯 Целевое значение: <code>"
-        f"{data['base_price'] * (1 + data.get('current_pct', 0.0) / 100):,.2f} $" 
-        if data['metric'] == 'price' else 
-        f"{(data['base_vol'] * (1 + data.get('current_pct', 0.0) / 100)) / 1_000_000:,.2f} млн $"
-        f"</code>\n\n"
-        
+        f"🪙 Монета: <b>{coin}</b> ({name})\n"
+        f"📍 Текущее значение: <code>{base_str}</code>\n\n"
+        f"🎛 Выбранное изменение: <b>{sign}{current_pct:.1f}%</b>\n"
+        f"🎯 Целевое значение: <code>{target_str}</code>\n\n"
         f"<i>Нажимай кнопки ниже, чтобы настроить нужный процент:</i>"
     )
     
@@ -1644,7 +1690,7 @@ async def button_my_alerts(message: types.Message):
         async with db.execute(
             """SELECT id, coin_symbol, alert_type, operator, 
                       price_check, price_target, price_dir, 
-                      vol_check, vol_target, vol_dir, vol_tf, price_tf
+                      vol_check, vol_target, vol_dir, vol_tf, price_tf, price_rate_unit
                FROM smart_alerts WHERE user_id = ?""",
             (message.chat.id,)
         ) as cursor:
@@ -1657,19 +1703,24 @@ async def button_my_alerts(message: types.Message):
         )
     
     builder = InlineKeyboardBuilder()
+    price = await get_cached_prices()
+    vol_tf_names = {"1h": "1 часа", "4h": "4 часов", "1d": "1 день", "7d": "7 дней"}
     
     for a in user_alerts:
         coin = a["coin_symbol"].replace("USDT", "")
+        real_coin = a["coin_symbol"]
         
         if a["alert_type"] == "simple":
             if a["price_check"]:
                 direction = "⬆️" if a["price_dir"] == "UP" else "⬇️"
-                val_str = f"{a['price_target']:,.2f}$".replace(".00$", "$")
                 tf_short = VOL_TF_SHORT.get(a["price_tf"] or "1d", "24ч")
                 if tf_short:
-                    button_text = f"{direction} {coin} Период ({tf_short}) Цена → {val_str} ❌"
+                    if a['price_rate_unit'] == "money":
+                        button_text = f"{direction} {coin} → Изменение цены ({price[real_coin]}$) на {a['price_target']}$/Период {vol_tf_names[a['price_tf']]} ❌"
+                    else:
+                        button_text = f"{direction} {coin} → Изменение цены ({price[real_coin]}$) на {a['price_target']}%/Период {vol_tf_names[a['price_tf']]} ❌"
                 else:
-                    button_text = f"{direction} {coin} Цена → {val_str} ❌"
+                    button_text = f"{direction} {coin} Цена → {a['price_target']}$ ❌"
             elif a["vol_check"]:
                 direction = "⬆️" if a["vol_dir"] == "UP" else "⬇️"
                 vol = a["vol_target"]
