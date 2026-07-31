@@ -135,7 +135,7 @@ async def check_alerts_loop():
         while True:
             try:
                 prices = await get_cached_prices()
-                stats = await get_cached_stats(get_delta_price=True, get_price=True)
+                stats = await get_cached_stats()
                 if not prices:
                     await asyncio.sleep(30)
                     continue
@@ -394,7 +394,7 @@ async def price_cmd_tf(callback: types.CallbackQuery, state: FSMContext):
     symbols = [f"{c}USDT" for c in POPULAR_COINS]
 
     if tf_price == "1d":
-        stats = await get_cached_stats(get_price=True)
+        stats = await get_cached_stats()
     else:
         stats = await fetch_all_volumes_tf(window_size=tf_price, symbols=symbols)
 
@@ -1204,9 +1204,9 @@ async def simple_price_rate_input_handler(message: types.Message, state: FSMCont
         
 
     if rate_unit == "money":
-        direction = "UP" if target_val > (await get_symbol_price_delta(coin, tf_price)) else "DOWN"
+        direction = ("UP" if target_val > (await get_symbol_price_delta(coin, tf_price)) else "DOWN") if target_val >= 0 else "UP" if target_val < (await get_symbol_price_delta(coin, tf_price)) else "DOWN"
     else:
-        direction = "UP" if target_val > (await get_symbol_price_change(coin, tf_price)) else "DOWN"
+        direction = ("UP" if target_val > (await get_symbol_price_delta(coin, tf_price)) else "DOWN") if target_val >= 0 else "UP" if target_val < (await get_symbol_price_delta(coin, tf_price)) else "DOWN"
         
     success = await add_smart_alert(
         user_id=message.chat.id, coin=coin, alert_type='simple',
@@ -1716,9 +1716,9 @@ async def button_my_alerts(message: types.Message):
                 tf_short = VOL_TF_SHORT.get(a["price_tf"] or "1d", "24ч")
                 if tf_short:
                     if a['price_rate_unit'] == "money":
-                        button_text = f"{direction} {coin} → Изменение цены ({price[real_coin]}$) на {a['price_target']}$/Период {vol_tf_names[a['price_tf']]} ❌"
+                        button_text = f"{direction} {coin} → Изменение цены ({price.get(real_coin, 'N/A')}$) на {a['price_target']}$/Период {vol_tf_names[a['price_tf']]} ❌"
                     else:
-                        button_text = f"{direction} {coin} → Изменение цены ({price[real_coin]}$) на {a['price_target']}%/Период {vol_tf_names[a['price_tf']]} ❌"
+                        button_text = f"{direction} {coin} → Изменение цены ({price.get(real_coin, 'N/A')}$) на {a['price_target']}%/Период {vol_tf_names[a['price_tf']]} ❌"
                 else:
                     button_text = f"{direction} {coin} Цена → {a['price_target']}$ ❌"
             elif a["vol_check"]:

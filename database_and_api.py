@@ -167,22 +167,10 @@ async def get_cached_prices() -> dict:
             rows = await cursor.fetchall()
             return {row[0]: row[1] for row in rows}
     
-async def get_cached_stats(get_price=False, get_delta_price=False) -> dict:
+async def get_cached_stats() -> dict:
     
     async with aiosqlite.connect(DB_NAME) as db:
-        if not get_price and not get_delta_price:
-            async with db.execute("SELECT coin_symbol, quote_volume, price_change_percent FROM crypto_cache") as cursor:
-                rows = await cursor.fetchall()
-                return {row[0]: {'quote_volume': row[1], 'price_change_percent': row[2]} for row in rows}
-        elif get_price and not get_delta_price:
-            async with db.execute("SELECT coin_symbol, quote_volume, price_change_percent, price FROM crypto_cache") as cursor:
-                rows = await cursor.fetchall()
-                return {row[0]: {'quote_volume': row[1], 'price_change_percent': row[2], 'price' : row[3]} for row in rows}
-        elif not get_price and get_delta_price:
-            async with db.execute("SELECT coin_symbol, quote_volume, price_change_percent, price_delta FROM crypto_cache") as cursor:
-                rows = await cursor.fetchall()
-                return {row[0]: {'quote_volume': row[1], 'price_change_percent': row[2], 'price_delta': row[3]} for row in rows}
-        else:
+
             async with db.execute("SELECT coin_symbol, quote_volume, price_change_percent, price, price_delta FROM crypto_cache") as cursor:
                 rows = await cursor.fetchall()
                 return {row[0]: {'quote_volume': row[1], 'price_change_percent': row[2], 'price' : row[3], 'price_delta': row[4]} for row in rows}
@@ -319,7 +307,7 @@ async def get_symbol_price_change(symbol: str, window_size: str = "1d") -> float
     Для '1d' берет из локального кэша, для остальных периодов — живой запрос.
     """
     if window_size == "1d":
-        cached = await get_cached_stats(get_price=True)
+        cached = await get_cached_stats()
         data = cached.get(symbol)
     else:
         stats = await fetch_all_volumes_tf(window_size=window_size, symbols=[symbol])
@@ -332,7 +320,7 @@ async def get_symbol_price_delta(symbol: str, window_size: str = "1d", quote_ass
     full_symbol = symbol if symbol.endswith(quote_asset) else f"{symbol}{quote_asset}"
     
     if window_size == "1d":
-        cached = await get_cached_stats(get_price=True, get_delta_price=True)
+        cached = await get_cached_stats()
         # В кэше у вас ключи могут быть как BTC, так и BTCUSDT. Проверим оба варианта:
         data = cached.get(symbol) or cached.get(full_symbol)
     else:
