@@ -83,7 +83,12 @@ class SmartAlertForm(StatesGroup):
     
     
     complex_operator = State()
+    complex_price_mode = State()
     
+    complex_price_rate_tf = State()   # период для скорости
+    complex_price_rate_unit = State()
+    complex_price_rate_input = State()
+    complex_price_rate_menu_percent = State()
     
     complex_price_unit = State() 
     complex_price_input = State() 
@@ -613,18 +618,22 @@ async def complex_operator_cmd(callback: types.CallbackQuery, state: FSMContext)
     await callback.answer()
     
     builder = InlineKeyboardBuilder()
-    builder.add(InlineKeyboardButton(text="💵 В деньгах ($)", callback_data="complex_unit:money"))
-    builder.add(InlineKeyboardButton(text="📈 В процентах (%)", callback_data="complex_unit:percent"))
-    builder.adjust(2)
+    builder.add(InlineKeyboardButton(text="🎯 Уровень цены", callback_data="complex_price_mode:level"))
+    builder.add(InlineKeyboardButton(text="⚡ Скорость изменения", callback_data="complex_price_mode:rate"))
+    builder.adjust(1)
         
     await callback.message.edit_text(
         f"📊 Отслеживание с оператором <b>{operator}</b>\n\n"
-        "<b>Шаг 4: В чем будем измерять цену монеты?</b>\n"
-        "💵 <i>В деньгах</i> — вводишь точную сумму (например: 65000$).\n"
-        "📈 <i>В процентах</i> — выберешь рост или падение в % от текущего значения.",
+        "<b>Шаг 3.5: Что именно отслеживаем?</b>\n"
+        "🎯 <i>Уровень цены</i> — сработает, когда цена пересечёт заданную отметку "
+        "(например, $65000), независимо от времени.\n"
+        "⚡ <i>Скорость изменения</i> — сработает, если цена изменится на X% (или $) "
+        "именно за выбранный период (например, +5% за 4 часа).",
         reply_markup=builder.as_markup()
     )
-    await state.set_state(SmartAlertForm.complex_price_unit)
+    await state.set_state(SmartAlertForm.complex_price_mode)
+    
+
     
 @dp.callback_query(SmartAlertForm.complex_price_unit, F.data == "complex_unit:money")
 async def complex_init_money_cmd(callback: types.CallbackQuery, state: FSMContext):
@@ -1005,8 +1014,8 @@ async def simple_metric_chosen(callback: types.CallbackQuery, state: FSMContext)
         return
 
     builder = InlineKeyboardBuilder()
-    builder.add(InlineKeyboardButton(text="🎯 Уровень цены", callback_data="price_mode:level"))
-    builder.add(InlineKeyboardButton(text="⚡ Скорость изменения", callback_data="price_mode:rate"))
+    builder.add(InlineKeyboardButton(text="🎯 Уровень цены", callback_data="simple_price_mode:level"))
+    builder.add(InlineKeyboardButton(text="⚡ Скорость изменения", callback_data="simple_price_mode:rate"))
     builder.adjust(1)
 
     await callback.message.edit_text(
@@ -1020,13 +1029,13 @@ async def simple_metric_chosen(callback: types.CallbackQuery, state: FSMContext)
     )
     await state.set_state(SmartAlertForm.simple_price_mode)
     
-@dp.callback_query(SmartAlertForm.simple_price_mode, F.data == "price_mode:level")
+@dp.callback_query(SmartAlertForm.simple_price_mode, F.data == "simple_price_mode:level")
 async def price_mode_level_chosen(callback: types.CallbackQuery, state: FSMContext):
     await callback.answer()
     
     await ask_simple_unit(callback, state)
     
-@dp.callback_query(SmartAlertForm.simple_price_mode, F.data == "price_mode:rate")
+@dp.callback_query(SmartAlertForm.simple_price_mode, F.data == "simple_price_mode:rate")
 async def price_mode_rate_chosen(callback: types.CallbackQuery, state: FSMContext):
     await callback.answer()
 
@@ -1078,7 +1087,6 @@ async def simple_price_rate_unit_handler_percent(callback: types.CallbackQuery, 
         f"⏱ Период: <b>{tf_names.get((data.get('tf_price', '1d')), (data.get('tf_price', '1d')))}</b>\n"
         f"📍 Текущая цена: <code>{data['base_price']:,.2f} $</code>\n\n"
         f"🎛 Изменение за период: <b>{"+" if (data.get('current_pct', 0.0)) > 0 else ""}{data.get('current_pct', 0.0):.1f}%</b>\n"
-        f"🎯 Цель (ориентир): <code>{(data['base_price'] * (100 + (data.get('current_pct', 0.0)) / 100)):,.2f} $</code>\n\n"
         f"<i>Укажи, на сколько процентов должна измениться цена за {tf_names.get((data.get('tf_price', '1d')), (data.get('tf_price', '1d')))}:</i>"
     )
     
@@ -1102,7 +1110,6 @@ async def s_percent_add_handler_rate(callback: types.CallbackQuery, state: FSMCo
         f"⏱ Период: <b>{tf_names.get((data.get('tf_price', '1d')), (data.get('tf_price', '1d')))}</b>\n"
         f"📍 Текущая цена: <code>{data['base_price']:,.2f} $</code>\n\n"
         f"🎛 Изменение за период: <b>{"+" if (new_pct) > 0 else ""}{new_pct:.1f}%</b>\n"
-        f"🎯 Цель (ориентир): <code>{(data['base_price'] * (100 + (new_pct) / 100)):,.2f} $</code>\n\n"
         f"<i>Укажи, на сколько процентов должна измениться цена за {tf_names.get((data.get('tf_price', '1d')), (data.get('tf_price', '1d')))}:</i>"
     )
     
@@ -1126,7 +1133,6 @@ async def percent_reset_handler_rate(callback: types.CallbackQuery, state: FSMCo
         f"⏱ Период: <b>{tf_names.get((data.get('tf_price', '1d')), (data.get('tf_price', '1d')))}</b>\n"
         f"📍 Текущая цена: <code>{data['base_price']:,.2f} $</code>\n\n"
         f"🎛 Изменение за период: <b>0%</b>\n"
-        f"🎯 Цель (ориентир): <code>{(data['base_price'] * (100 + (data.get('current_pct', 0.0)) / 100)):,.2f} $</code>\n\n"
         f"<i>Укажи, на сколько процентов должна измениться цена за {tf_names.get((data.get('tf_price', '1d')), (data.get('tf_price', '1d')))}:</i>"
     )
     
@@ -1138,7 +1144,7 @@ async def percent_reset_handler_rate(callback: types.CallbackQuery, state: FSMCo
     await callback.answer("Сброшено в 0%")
 
 @dp.callback_query(SmartAlertForm.simple_price_rate_menu_percent, F.data == "pct_manual")
-async def percent_manual_start(callback: types.CallbackQuery, state: FSMContext):
+async def percent_manual_start_rate(callback: types.CallbackQuery, state: FSMContext):
     await callback.answer()
     await callback.message.edit_text(
         "✏️ <b>Ручной ввод процента</b>\n\n"
@@ -1149,6 +1155,41 @@ async def percent_manual_start(callback: types.CallbackQuery, state: FSMContext)
     
     await state.update_data(rate_unit="percent")
     await state.set_state(SmartAlertForm.simple_price_rate_input)
+    
+@dp.callback_query(SmartAlertForm.simple_price_rate_menu_percent, F.data == "pct_confirm")
+async def percent_confirm_handler_rate(callback: types.CallbackQuery, state: FSMContext):
+    data = await state.get_data()
+    coin = data['coin']
+    current_pct = data['current_pct']
+    tf_price = data['tf_price']
+    price_tf_names = {"1h": "1 часа", "4h": "4 часов", "1d": "24 часов", "7d": "7 дней"}
+    
+    if current_pct == 0.0:
+        return await callback.answer("❌ Процент изменения не может быть равен 0!", show_alert=True)
+        
+    direction = "UP" if current_pct > 0 else "DOWN"
+    dir_text = "📈 выростет до" if direction == "UP" else "📉 упадет до"
+            
+    success = await add_smart_alert(
+        user_id=callback.message.chat.id, coin=coin, alert_type='simple',
+        price_check=1, price_target=current_pct, price_dir=direction,
+        price_tf=tf_price, price_rate_unit="percent",
+    )
+    
+    sign = "+" if current_pct > 0 else ""
+        
+    await state.clear()
+    await callback.message.delete()
+    
+    if success:
+        await callback.message.answer(
+                f"✅ <b>Алерт успешно установлен!</b>\n\n"
+                f"🪙 Монета: <code>{coin}</code>\n"
+                f"🎯 Условие: я пришлю уведомление, когда процент изменение монеты {dir_text} {sign}{current_pct}% за период {price_tf_names[tf_price]}).",
+                reply_markup=main_kb
+        )
+    else:
+        await callback.message.answer("❌ Произошла ошибка при сохранении в базу.", reply_markup=main_kb)
     
 @dp.callback_query(SmartAlertForm.simple_price_rate_unit, F.data == "rate_unit:money")
 async def simple_price_rate_unit_handler_money(callback: types.CallbackQuery, state: FSMContext):
@@ -1204,9 +1245,9 @@ async def simple_price_rate_input_handler(message: types.Message, state: FSMCont
         
 
     if rate_unit == "money":
-        direction = ("UP" if target_val > (await get_symbol_price_delta(coin, tf_price)) else "DOWN") if target_val >= 0 else "UP" if target_val < (await get_symbol_price_delta(coin, tf_price)) else "DOWN"
+        direction = "UP" if raw_val > 0 else "DOWN"
     else:
-        direction = ("UP" if target_val > (await get_symbol_price_delta(coin, tf_price)) else "DOWN") if target_val >= 0 else "UP" if target_val < (await get_symbol_price_delta(coin, tf_price)) else "DOWN"
+        direction = "UP" if raw_val > 0 else "DOWN"
         
     success = await add_smart_alert(
         user_id=message.chat.id, coin=coin, alert_type='simple',
@@ -1546,7 +1587,7 @@ async def percent_confirm_handler(callback: types.CallbackQuery, state: FSMConte
             user_id=callback.from_user.id, coin=coin, alert_type='simple',
             price_check=1, price_target=target_val, price_dir=direction
         )
-        dir_text = "📈 выросла на" if direction == "UP" else "📉 упала на"
+        dir_text = "📈 монета выростет до" if direction == "UP" else "📉 монета упадет до"
         val_str = f"<b>{abs(current_pct)}%</b> (до <code>{target_val:,.2f} $</code>)"
     else:
         vol_tf = data.get('vol_tf', '1d')
@@ -1681,31 +1722,25 @@ async def process_tf(callback: types.CallbackQuery, state: FSMContext):
     )
     await state.clear() 
 
-
-@dp.message(F.text == "Мои алерты")
-async def button_my_alerts(message: types.Message):
+async def get_alerts_keyboard(user_id: int):
     async with aiosqlite.connect(DB_NAME) as db:
         db.row_factory = aiosqlite.Row
-        
         async with db.execute(
             """SELECT id, coin_symbol, alert_type, operator, 
                       price_check, price_target, price_dir, 
                       vol_check, vol_target, vol_dir, vol_tf, price_tf, price_rate_unit
                FROM smart_alerts WHERE user_id = ?""",
-            (message.chat.id,)
+            (user_id,)
         ) as cursor:
             user_alerts = await cursor.fetchall()
-    
+            
     if not user_alerts:
-        return await message.answer(
-            "📭 <b>У тебя пока нет активных уведомлений.</b>\n\n"
-            "Нажми кнопку <b>«Создать алерт»</b> в меню ниже, чтобы добавить первое!"
-        )
-    
+        return None, None
+
     builder = InlineKeyboardBuilder()
     price = await get_cached_prices()
     vol_tf_names = {"1h": "1 часа", "4h": "4 часов", "1d": "1 день", "7d": "7 дней"}
-    
+
     for a in user_alerts:
         coin = a["coin_symbol"].replace("USDT", "")
         real_coin = a["coin_symbol"]
@@ -1713,14 +1748,17 @@ async def button_my_alerts(message: types.Message):
         if a["alert_type"] == "simple":
             if a["price_check"]:
                 direction = "⬆️" if a["price_dir"] == "UP" else "⬇️"
-                tf_short = VOL_TF_SHORT.get(a["price_tf"] or "1d", "24ч")
-                if tf_short:
+                # Проверяем, задан ли вообще таймфрейм для изменения цены
+                if a["price_tf"]:
+                    tf_name = vol_tf_names.get(a["price_tf"], a["price_tf"])
                     if a['price_rate_unit'] == "money":
-                        button_text = f"{direction} {coin} → Изменение цены ({price.get(real_coin, 'N/A')}$) на {a['price_target']}$/Период {vol_tf_names[a['price_tf']]} ❌"
+                        button_text = f"{direction} {coin} → Изменение цены ({price.get(real_coin, 'N/A')}$) на {a['price_target']}$/Период {tf_name} ❌"
                     else:
-                        button_text = f"{direction} {coin} → Изменение цены ({price.get(real_coin, 'N/A')}$) на {a['price_target']}%/Период {vol_tf_names[a['price_tf']]} ❌"
+                        button_text = f"{direction} {coin} → Изменение цены ({price.get(real_coin, 'N/A')}$) на {a['price_target']}%/Период {tf_name} ❌"
                 else:
+                    # Обычный ценовой алерт без таймфрейма
                     button_text = f"{direction} {coin} Цена → {a['price_target']}$ ❌"
+                    
             elif a["vol_check"]:
                 direction = "⬆️" if a["vol_dir"] == "UP" else "⬇️"
                 vol = a["vol_target"]
@@ -1742,11 +1780,11 @@ async def button_my_alerts(message: types.Message):
             direction_vol = "⬆️" if a["vol_dir"] == "UP" else "⬇️"
             vol = a["vol_target"]
             if vol >= 1_000_000_000:
-                    vol_str = f"{vol / 1_000_000_000:.2f} млрд$"
+                vol_str = f"{vol / 1_000_000_000:.2f} млрд$"
             elif vol >= 1_000_000:
-                    vol_str = f"{vol / 1_000_000:.2f} млн$"
+                vol_str = f"{vol / 1_000_000:.2f} млн$"
             else:
-                    vol_str = f"{vol:,.0f}$"
+                vol_str = f"{vol:,.0f}$"
             beautiful_vol = f"{vol:,.2f}".replace(",", " ").replace(".", ",")
             button_text = f"⚡️ {coin} [Цена → {direction_price}{val_str_price} {op_symbol} Объем → {direction_vol}{beautiful_vol} $] ❌"
         
@@ -1755,14 +1793,29 @@ async def button_my_alerts(message: types.Message):
             callback_data=f"delete_alert:{a['id']}"
         ))
     
-    builder.adjust(1) 
+    builder.adjust(1)
+    return builder.as_markup(), len(user_alerts)
+
+
+# Хэндлер команды
+@dp.message(F.text == "Мои алерты")
+async def button_my_alerts(message: types.Message):
+    reply_markup, total = await get_alerts_keyboard(message.chat.id)
     
+    if not reply_markup:
+        return await message.answer(
+            "📭 <b>У тебя пока нет активных уведомлений.</b>\n\n"
+            "Нажми кнопку <b>«Создать алерт»</b> в меню ниже, чтобы добавить первое!"
+        )
+        
     await message.answer(
         "📋 <b>Твои активные алерты:</b>\n\n"
         "<i>Нажми на любую кнопку с алертом, чтобы удалить его из базы:</i>",
-        reply_markup=builder.as_markup() 
+        reply_markup=reply_markup
     )
 
+
+# Хэндлер удаления
 @dp.callback_query(F.data.startswith("delete_alert:"))
 async def process_delete_alert(callback: types.CallbackQuery):
     alert_id = int(callback.data.split(":")[1])
@@ -1776,9 +1829,18 @@ async def process_delete_alert(callback: types.CallbackQuery):
    
     await callback.answer("✅ Уведомление удалено!")
     
+    reply_markup, total = await get_alerts_keyboard(callback.message.chat.id)
+    
+    if not reply_markup:
+        return await callback.message.edit_text(
+            "📭 <b>У тебя пока нет активных уведомлений.</b>\n\n"
+            "Нажми кнопку <b>«Создать алерт»</b> в меню ниже, чтобы добавить первое!"
+        )
+        
     await callback.message.edit_text(
-        "🗑 <b>Алерт успешно удален!</b>\n\n"
-        "Нажми кнопку <b>«Мои алерты»</b> в нижнем меню, чтобы посмотреть оставшиеся."
+        "📋 <b>Твои активные алерты:</b>\n\n"
+        "<i>Нажми на любую кнопку с алертом, чтобы удалить его из базы:</i>",
+        reply_markup=reply_markup
     )
 
 async def on_startup():
