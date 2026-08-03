@@ -183,7 +183,7 @@ async def check_alerts_loop():
                                         
                                         if rate_unit == "percent":
                                             # --- Алерт на ИЗМЕНЕНИЕ В ПРОЦЕНТАХ за период ---
-                                            curr_percent = tf_stats.get("price_change_percent", 0.0)
+                                            curr_percent = tf_stats.get(symbol, {}).get("price_change_percent", 0.0)
                                             tf_name = VOL_TF_NAMES.get(price_tf, price_tf)
                                             
                                             if direction == "UP" and curr_percent >= target_price:
@@ -205,7 +205,7 @@ async def check_alerts_loop():
                                                 
                                         elif rate_unit == "money":
                                             # --- Алерт на ИЗМЕНЕНИЕ В ДОЛЛАРАХ за период ---
-                                            curr_delta = tf_stats.get("price_delta", 0.0)
+                                            curr_delta = tf_stats.get(symbol, {}).get("price_delta", 0.0)
                                             tf_name = VOL_TF_NAMES.get(price_tf, price_tf)
                                             
                                             # Для текста красиво посчитаем еще и процент, раз ты хотел его вывести:
@@ -633,7 +633,23 @@ async def complex_operator_cmd(callback: types.CallbackQuery, state: FSMContext)
     )
     await state.set_state(SmartAlertForm.complex_price_mode)
     
-
+@dp.callback_query(SmartAlertForm.complex_price_mode, F.data == "complex_price_mode:level")
+async def complex_price_mode_level_handler(callback: types.CallbackQuery, state: FSMContext):
+    await callback.answer()
+    await callback.answer()
+    
+    builder = InlineKeyboardBuilder()
+    builder.add(InlineKeyboardButton(text="💵 В деньгах ($)", callback_data="complex_unit:money"))
+    builder.add(InlineKeyboardButton(text="📈 В процентах (%)", callback_data="complex_unit:percent"))
+    builder.adjust(2)
+        
+    await callback.message.edit_text(
+        f"📊 Отлично! Отслеживание с по <b>уровню цены</b>\n\n"
+        "<b>Шаг 4: В чем будем измерять цену монеты?</b>\n"
+        "💵 <i>В деньгах</i> — вводишь точную сумму (например: 65000$).\n"
+        "📈 <i>В процентах</i> — выберешь рост или падение в % от текущего значения.",
+    )
+    await state.set_state(SmartAlertForm.complex_price_unit)
     
 @dp.callback_query(SmartAlertForm.complex_price_unit, F.data == "complex_unit:money")
 async def complex_init_money_cmd(callback: types.CallbackQuery, state: FSMContext):
