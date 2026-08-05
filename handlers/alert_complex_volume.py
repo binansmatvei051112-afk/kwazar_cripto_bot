@@ -137,6 +137,7 @@ async def complex_percent_confirm_handler_vol(callback: types.CallbackQuery, sta
     
     await callback.message.delete()
     
+    price_tf = data.get('price_tf') or data.get('tf_price')
     vol_tf = data.get('vol_tf', '1d')
     vol = data['base_vol'] * (1 + current_pct / 100)
     direction = "UP" if current_pct > 0 else "DOWN"
@@ -144,7 +145,7 @@ async def complex_percent_confirm_handler_vol(callback: types.CallbackQuery, sta
     success = await add_smart_alert(
         user_id=callback.message.chat.id, coin=data['coin'], alert_type='complex',
         operator=data['operator'].upper(),
-        price_check=1, price_target=data['price_target'], price_dir=data['price_dir'], price_tf=data['price_tf'], price_rate_unit=data['price_rate_unit'],
+        price_check=1, price_target=data['price_target'], price_dir=data['price_dir'], price_tf=price_tf, price_rate_unit=data['price_rate_unit'],
         vol_check=1, vol_target=vol, vol_dir=direction, vol_tf=vol_tf
     )
     
@@ -196,13 +197,14 @@ async def cmd_input_vol(message: types.Message, state: FSMContext):
     else:
         vol = row_vol
         
+    price_tf = data.get('price_tf') or data.get('tf_price')
     direction = "UP" if vol > data['base_vol'] else "DOWN"
     vol_tf = data.get('vol_tf', '1d')
 
     success = await add_smart_alert(
         user_id=message.chat.id, coin=data['coin'], alert_type='complex',
         operator=data['operator'].upper(),
-        price_check=1, price_target=data['price_target'], price_dir=data['price_dir'], price_tf=data['price_tf'], price_rate_unit=data['price_rate_unit'],
+        price_check=1, price_target=data['price_target'], price_dir=data['price_dir'], price_tf=price_tf, price_rate_unit=data['price_rate_unit'],
         vol_check=1, vol_target=vol, vol_dir=direction, vol_tf=vol_tf
     )
 
