@@ -7,3 +7,4 @@ bot.log
 *.pyc
 *.pyo
 *.pyd
+.vscode/
