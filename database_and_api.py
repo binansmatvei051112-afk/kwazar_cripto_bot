@@ -62,7 +62,6 @@ async def add_users(user_id:int):
     async with aiosqlite.connect(DB_NAME) as db:
         await db.execute("INSERT OR IGNORE INTO users (user_id) VALUES (?)", (user_id,))
         await db.commit()
-        await db.close()
         
 async def get_all_users() -> list:
     async with aiosqlite.connect(DB_NAME) as db:
@@ -260,7 +259,7 @@ async def fetch_all_volumes_tf(window_size: str = "1d", quote_asset: str = "USDT
         url = "https://api1.binance.com/api/v3/ticker/24hr"
         params = {}
     else:
-        symbols_list = symbols or DEFAULT_TRACKED_SYMBOLS
+        symbols_list = DEFAULT_TRACKED_SYMBOLS if symbols is None else symbols
         
         symbols_json = json.dumps(symbols_list, separators=(",", ":"))
         url = "https://api1.binance.com/api/v3/ticker"

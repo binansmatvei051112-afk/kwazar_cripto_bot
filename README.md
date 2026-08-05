@@ -44,11 +44,43 @@ docker-compose up --build -d
 
 ```text
 kwazar_crypto_bot/
-├── database_and_api.py   # Работа с SQLite, Binance API и генерация графиков
-├── docker-compose.yml    # Конфигурация Docker Compose
-├── Dockerfile            # Docker-образ приложения
-├── main.py               # Точка входа, хэндлеры команд и логика Telegram-бота
-├── README.md             # Документация проекта
-├── requirements.txt      # Python-зависимости проекта
-└── .env                  # Переменные окружения (не добавляется в git)
+├── main.py                     # Точка входа: сборка, запуск polling
+├── config.py                   # .env, BOT_TOKEN, ADMIN_ID, логгер
+├── bot_instance.py             # Общие объекты Bot и Dispatcher (dp)
+├── constants.py                # POPULAR_COINS, VOL_TF_NAMES, VOL_TF_SHORT
+├── states.py                   # FSM-состояния (SmartAlertForm, ChartStates, Cointf)
+├── filters.py                  # IsAdmin
+├── keyboards.py                # main_kb, cancel_kb, меню процентов для алертов
+├── database_and_api.py         # SQLite, Binance API, генерация графиков
+│
+├── background/                 # Фоновые asyncio-воркеры
+│   ├── cache_updater.py        #   обновление кэша цен/статистики (каждые 30с)
+│   ├── alert_checker.py        #   проверка алертов и рассылка уведомлений (каждые 30с)
+│   └── newsletter.py           #   утренняя рассылка топ-3 монет (по расписанию)
+│
+├── handlers/                   # Все хендлеры бота (@dp.message / @dp.callback_query)
+│   ├── __init__.py             #   импортирует все файлы ниже — регистрирует хендлеры
+│   ├── start.py                #   /start, кнопка "Отмена"
+│   ├── prices.py                #   "🔍 Курсы валют", /price
+│   ├── volumes.py              #   "📊 Объемы"
+│   ├── chart.py                #   "Показать график монеты"
+│   ├── alerts_list.py          #   "Мои алерты" (список + удаление)
+│   ├── admin.py                #   /admin, /send
+│   ├── alert_common.py         #   создание алерта: выбор монеты и типа (simple/complex)
+│   ├── alert_complex_price.py  #   сложный алерт: условие по цене
+│   ├── alert_complex_volume.py #   сложный алерт: условие по объёму + сохранение
+│   ├── alert_simple_price.py   #   простой алерт: условие по цене + сохранение
+│   └── alert_simple_volume.py  #   простой алерт: условие по объёму + сохранение
+│
+├── docker-compose.yml
+├── Dockerfile
+├── requirements.txt
+└── .env                         # Переменные окружения (не добавляется в git)
 ```
+
+**Где искать нужный хендлер:** если это команда/кнопка из главного меню — смотри `handlers/`
+(имя файла соответствует разделу меню). Если это шаг создания алерта — `handlers/alert_*.py`
+(common → выбор монеты/типа, complex_price/complex_volume → сложный алерт,
+simple_price/simple_volume → простой алерт). Если это логика самой проверки условий
+(срабатывает раз в 30 секунд) — `background/alert_checker.py`. Новый файл с хендлерами
+обязательно нужно импортировать в `handlers/__init__.py`, иначе бот его не увидит.
